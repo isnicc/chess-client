@@ -52,9 +52,8 @@
  *
  */
 
-var App = {}
+cc.game.onStart = function() {
+  cc.game.onStart();
+};
 
-cc.game.onStart = function () {
-  App.run()
-}
 cc.game.run();

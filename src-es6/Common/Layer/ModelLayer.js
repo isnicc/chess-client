@@ -5,6 +5,7 @@ export default cc.LayerColor.extend({
   m_touchListener: null,
   loading: null,
   loading_action: null,
+  loading_action_run: false,
   loading_label: null,
   modelOpacity: 200, // 最大的遮罩层
 
@@ -43,7 +44,7 @@ export default cc.LayerColor.extend({
     return cc.rectContainsPoint(owner.getBoundingBox(), touchLocation)
   },
   show(text = '加载中...') {
-    this.runAction()
+    this.startAction()
     this.setText(text)
     let opacity = 1
     this.setOpacity(opacity)
@@ -55,7 +56,7 @@ export default cc.LayerColor.extend({
     this.schedule(opacityFunc, 0.005)
   },
   hide() {
-    this.stopAction()
+    this.shutdownAction()
     let opacity = this.modelOpacity
     this.setOpacity(opacity)
     let opacityFunc = () => {
@@ -67,11 +68,13 @@ export default cc.LayerColor.extend({
     }
     this.schedule(opacityFunc, 0.005)
   },
-  stopAction() {
-    this.loading.stopAction(this.loading_action)
+  // @todo 这里需要改
+  shutdownAction() {
+    this.loading_action_run && this.loading.stopAction(this.loading_action) || (this.loading_action_run = false)
   },
-  runAction() {
-    this.loading.runAction(this.loading_action)
+  // @todo 这里需要改 cc.Repeat
+  startAction() {
+    (this.loading_action_run === false) && this.loading.runAction(this.loading_action) || (this.loading_action_run = true)
   },
   setText(text = '加载中...') {
     this.loading_label.setString(text)

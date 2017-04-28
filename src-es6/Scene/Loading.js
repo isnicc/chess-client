@@ -31,8 +31,6 @@ const LoadingScene = cc.Scene.extend({
     this._super()
     this.scheduleOnce(this._endLoading, this.loadTime)
     this._startLoading()
-
-    cc.log('loading')
   },
   onExit() {
     this._super()

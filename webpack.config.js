@@ -16,7 +16,6 @@ module.exports = {
   },
   externals: {
     '@cc': 'cc',
-    '@app': 'App',
   },
   // plugins: [
   //   new webpack.optimize.UglifyJsPlugin({
