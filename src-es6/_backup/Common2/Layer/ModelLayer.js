@@ -1,5 +1,6 @@
 import cc from '@cc'
-import resources from '../../resources'
+import {res} from '../../resources'
+import {isTouchInside} from '../../../utils/core'
 
 export default cc.LayerColor.extend({
   m_touchListener: null,
@@ -15,14 +16,14 @@ export default cc.LayerColor.extend({
     this.m_touchListener = {
       event: cc.EventListener.TOUCH_ONE_BY_ONE,
       swallowTouches: true,
-      onTouchBegan: (touch, event) => !(!event.getCurrentTarget().isVisible() || (!this._isTouchInside(event.getCurrentTarget(), touch))),
+      onTouchBegan: (touch, event) => !(!event.getCurrentTarget().isVisible() || (!isTouchInside(event.getCurrentTarget(), touch))),
     }
 
     cc.eventManager.addListener(this.m_touchListener, this)
 
     let size = cc.winSize
 
-    let loading = this.loading = new cc.Sprite(resources.loading)
+    let loading = this.loading = new cc.Sprite('res/icons/load-d.png')
     let loadingSize = loading.getContentSize()
     loading.setScale(size.height / 8 / loadingSize.height)
     loading.attr({
@@ -37,11 +38,6 @@ export default cc.LayerColor.extend({
       y: size.height / 2 - size.height / 8,
     })
     this.addChild(label)
-  },
-  _isTouchInside(owner, touch) {
-    if (!owner || !owner.getParent()) return false
-    let touchLocation = owner.getParent().convertToNodeSpace(touch.getLocation())
-    return cc.rectContainsPoint(owner.getBoundingBox(), touchLocation)
   },
   show(text = '加载中...') {
     this.startAction()
@@ -68,15 +64,22 @@ export default cc.LayerColor.extend({
     }
     this.schedule(opacityFunc, 0.005)
   },
-  // @todo 这里需要改
   shutdownAction() {
-    this.loading_action_run && this.loading.stopAction(this.loading_action) || (this.loading_action_run = false)
+    if (this.loading_action_run) {
+      this.loading.stopAction(this.loading_action)
+      this.loading_action_run = false
+    }
   },
-  // @todo 这里需要改 cc.Repeat
   startAction() {
-    (this.loading_action_run === false) && this.loading.runAction(this.loading_action) || (this.loading_action_run = true)
+    if (!this.loading_action_run) {
+      this.loading.runAction(this.loading_action)
+      this.loading_action_run = true
+    }
   },
   setText(text = '加载中...') {
     this.loading_label.setString(text)
+  },
+  setIcon(res) {
+    this.loading.setTexture(res)
   },
 })

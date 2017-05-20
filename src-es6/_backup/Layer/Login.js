@@ -1,7 +1,7 @@
 import cc from '@cc'
-import resources from '../resources'
+import {res} from '../resources'
 
-export default cc.Layer.extend({
+export default cc.LayerColor.extend({
   ctor() {
     this._super(cc.color(255, 255, 255, 255))
     let size = cc.winSize
@@ -13,7 +13,11 @@ export default cc.Layer.extend({
     })
     this.addChild(label)
 
-    let sprite = new cc.Sprite(resources.hello)
+    let sprite = new cc.Sprite(res('HelloWorld.png'))
+    cc.log({
+      x: size.width / 2,
+      y: size.height / 2,
+    })
     sprite.attr({
       x: size.width / 2,
       y: size.height / 2,

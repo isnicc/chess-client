@@ -2,16 +2,24 @@
  * Created by zhuangjianjia on 17-4-26.
  */
 import {Buffer} from 'safe-buffer'
+
 import cc from '@cc'
 
 export default class Packet {
   constructor(data = null) {
     this.offset = 0
-    if (data) {
+    if (typeof data === 'string') {
       this.buffer = Buffer.from(data) // Uint8Array
     } else {
-      this.buffer = Buffer.alloc(128) // Uint8Array
+      this.buffer = Buffer.alloc(parseInt(data)) // Uint8Array
     }
+  }
+
+  toPack() {
+    let buf = Buffer.alloc(4)
+    let length = this.offset
+    buf.writeUInt32BE(length)
+    return buf.toString() + this.read(0, length)
   }
 
   write(buf, offset, length) {

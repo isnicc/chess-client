@@ -1,11 +1,17 @@
-var webpack = require('webpack')
-var path = require('path')
+const webpack = require('webpack')
+const path = require('path')
+const PrepackWebpackPlugin = require('prepack-webpack-plugin').default
 
 module.exports = {
   entry: './src-es6/app.js',
   output: {
     path: path.resolve(__dirname, 'src'),
     filename: 'game.js'
+  },
+  devtool: "#source-map",
+  resolve: {
+    alias: {
+    },
   },
   module: {
     loaders: [{
@@ -16,12 +22,21 @@ module.exports = {
   },
   externals: {
     '@cc': 'cc',
+    '@ccui': 'ccui',
   },
-  // plugins: [
-  //   new webpack.optimize.UglifyJsPlugin({
-  //     compress: {
-  //       warnings: false
-  //     }
-  //   })
-  // ]
+  node: {
+    fs: 'empty'
+  },
+  plugins: [
+    // new PrepackWebpackPlugin({
+    //   prepack: {
+    //     mathRandomSeed: 'random-seed',
+    //   },
+    // }),
+    //   new webpack.optimize.UglifyJsPlugin({
+    //     compress: {
+    //       warnings: false
+    //     }
+    //   }),
+  ],
 }
