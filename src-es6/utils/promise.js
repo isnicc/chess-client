@@ -1,7 +1,7 @@
 /**
  * Created by zhuangjianjia on 17/5/2.
  */
-import {loader} from '@cc'
+import  cc, {loader} from '@cc'
 
 export const preload = (resources, ProgressCallback) => new Promise((resolve, reject) =>
   loader.load(resources, (result, count, loadedCount) =>
@@ -26,8 +26,9 @@ export const loadImg = (url, option = {isCrossOrigin: true}) => new Promise((res
     else resolve(img)
   }))
 
-export const loadText = url => new Promise((resolve, reject) =>
-  loader.loadTxt(url, (err, txt) => {
+export const loadText = url => new Promise((resolve, reject) => {
+  return loader.loadTxt(url, (err, txt) => {
     if (err) reject(err)
     else resolve(txt)
-  }))
+  })
+})

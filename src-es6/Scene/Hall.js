@@ -13,6 +13,8 @@ import {uiPath} from '../utils/path'
 import {loadImg, loadText} from '../utils/promise'
 import Loading from '../Common/Layer/Loading'
 import Alert from '../Common/Layer/Alert'
+import CreateNiuNiuRoom from '../Layer/Hall/CreateNiuNiuRoom'
+import Create13ShuiRoom from '../Layer/Hall/Create13ShuiRoom'
 
 export const resources = {
   bg: uiPath('bg/hall.png'),
@@ -42,6 +44,7 @@ export const resources = {
   enter_room_off: uiPath('button/enter_room_off.png'),
 
   alert_md: uiPath('bg/alert_md.png'),
+  alert_lg: uiPath('bg/alert_lg.png'),
   number_bg: uiPath('bg/number_bg.png'),
   num0: uiPath('button/num0.png'),
   num0_on: uiPath('button/num0_on.png'),
@@ -68,10 +71,10 @@ export const resources = {
 }
 
 export default Scene.extend({
-  async ctor() {
+  ctor() {
     this._super()
 
-    this.bg = new BgLayer(resources.bg, resources.mm, resources.hall_bottom_bg, resources.text_anti_addiction, resources.message_bar, resources.message_icon, '/res/message.txt')
+    this.bg = new BgLayer(resources.bg, resources.mm, resources.hall_bottom_bg, resources.text_anti_addiction, resources.message_bar, resources.message_icon, 'http://127.0.0.1:8000/res/message.txt')
     this.Iuser = new UserLayer(resources.avatar_border, resources.avatar_bg, resources.icon_diamond, resources.diamond_bar)
     this.Igame = new GameLayer(resources.niuniu, resources.niuniu_on, resources._13shui, resources._13shui_on, resources.resume_room, resources.resume_room_on, resources.resume_room_off, resources.enter_room, resources.enter_room_on, resources.enter_room_off, resources.game_bg)
     this.loading = new Loading
@@ -90,11 +93,14 @@ export default Scene.extend({
       [resources.num9, resources.num9_on]
     ], resources.delete_number_btn, resources.delete_number_btn_on)
 
-    let img = await loadImg('http://127.0.0.1:8000/res/ui/avatar.png')
-    this.Iuser.setAvatar(img)
-    this.Iuser.setNickname('我甲你尚好就狗家')
-    this.Iuser.setUserId(19999)
-    this.Iuser.setDiamond(999)
+    this.createNiuNiu = new CreateNiuNiuRoom("牛牛", resources.alert_md)
+    this.create13Shui = new Create13ShuiRoom("十三水", resources.alert_md)
+
+    // let img = await loadImg('http://127.0.0.1:8000/res/ui/avatar.png')
+    // this.Iuser.setAvatar(img)
+    // this.Iuser.setNickname('我甲你尚好就狗家')
+    // this.Iuser.setUserId(19999)
+    // this.Iuser.setDiamond(999)
 
     return true
   },
@@ -104,8 +110,9 @@ export default Scene.extend({
     this.addChild(this.bg)
     this.addChild(this.Iuser)
     this.addChild(this.Igame)
-
     this.addChild(this.enter_room_number)
+    this.addChild(this.createNiuNiu)
+    this.addChild(this.create13Shui)
     this.addChild(this.loading)
     this.addChild(this.alert)
   },
@@ -146,9 +153,17 @@ export default Scene.extend({
     cc.log('avatar')
   },
   onClick13Shui() {
-    cc.log('13shui')
+    this.Igame._13shui_btn.setEnabled(false)
+    this.create13Shui.show()
   },
   onClickNiuNiu() {
-    cc.log('niuniu')
+    this.Igame.niuniu_btn.setEnabled(false)
+    this.createNiuNiu.show()
+  },
+  onClickCreateRoomClose(type) {
+    if (type === '牛牛')
+      this.Igame.niuniu_btn.setEnabled(true)
+    else this.Igame._13shui_btn.setEnabled(true)
+    return true
   },
 })

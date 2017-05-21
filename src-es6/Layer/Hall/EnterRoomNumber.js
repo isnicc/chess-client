@@ -40,13 +40,13 @@ export default Layer.extend({
     for (let i = 0; i < 10; ++i) {
       nums[i] = new Button(num_btns[i][0], num_btns[i][1])
       nums[i].setPosition(size.width / 2 - 250 + i % 4 * 170, size.height / 2 + 50 - parseInt(i / 4) * 100)
-      nums[i].addClickEventListener(() => this.pushNumber(i), nums[i])
+      nums[i].addClickEventListener(() => this.pushNumber(i))
     }
     this.nums = nums
 
     this.delete_btn = new Button(delete_number_btn, delete_number_btn_on)
     this.delete_btn.setPosition(size.width / 2 - 250 + 425, size.height / 2 + 50 - 200)
-    this.delete_btn.addClickEventListener(() => this.popNumber(), this.delete_btn)
+    this.delete_btn.addClickEventListener(() => this.popNumber())
 
     this.inputs = []
     for (let i = 0; i < 6; ++i) {
@@ -64,7 +64,7 @@ export default Layer.extend({
         if (this.parent.onClickEnterRoomClose())
           this.hide()
       }
-    }, this.close_button)
+    })
 
     eventManager.addListener({
       event: EventListener.TOUCH_ONE_BY_ONE,
@@ -102,10 +102,10 @@ export default Layer.extend({
   },
 
   show() {
-    fadeIn(this, 20, 0.005)
+    fadeIn(this, 10, 0.01)
   },
   hide() {
-    fadeOut(this, 20, 0.005)
+    fadeOut(this, 10, 0.01)
   },
   setOpacity(opacity) {
     for (let node of this.children) {

@@ -2,7 +2,7 @@ import 'es6-promise/auto'
 import cc, {view, director, sys, TransitionFade} from '@cc'
 import LoadingScene, {resources as loadingResources} from './Scene/Loading'
 import {preload} from './utils/promise'
-import HallResources, {resources as hallResources} from './Scene/Hall'
+import HallScene, {resources as hallResources} from './Scene/Hall'
 
 cc.game.onStart = () => {
   view.enableRetina(sys.os === sys.OS_IOS)
@@ -14,5 +14,5 @@ cc.game.onStart = () => {
     // , percent => cc.log(percent)
   )
     .then(() => preload(Object.values(hallResources)))
-    .then(() => director.runScene(new TransitionFade(0.33, new LoadingScene)))
+    .then(() => director.runScene(new TransitionFade(0.33, new HallScene)))
 }

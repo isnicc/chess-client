@@ -94,7 +94,9 @@ bool AppDelegate::applicationDidFinishLaunching()
 #endif
         director->setOpenGLView(glview);
 }
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
     glview->setFrameSize(736, 414);
+#endif
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0f / 60);

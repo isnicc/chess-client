@@ -68,10 +68,10 @@ export default LayerColor.extend({
   },
   show(text = '加载中...') {
     this.text(text)
-    fadeIn(this, 20, 0.005, this.maxOpacity)
+    fadeIn(this, 10, 0.01, this.maxOpacity)
   },
   hide() {
-    fadeOut(this, 20, 0.005, this.maxOpacity)
+    fadeOut(this, 10, 0.01, this.maxOpacity)
   },
   text(text = '加载中...') {
     this.loading_label.setString(text)

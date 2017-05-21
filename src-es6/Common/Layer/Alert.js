@@ -46,8 +46,8 @@ export default Layer.extend({
     this.alert_content = new cc.LabelTTF('', 'Arial', 35)
     this.alert_content.setColor(cc.color(0, 0, 0))
 
-    this.close_button.addClickEventListener(() => this.hide(), this.close_button)
-    this.ok_button.addClickEventListener(() => this.hide(), this.ok_button)
+    this.close_button.addClickEventListener(() => this.hide())
+    this.ok_button.addClickEventListener(() => this.hide())
 
     eventManager.addListener({
       event: EventListener.TOUCH_ONE_BY_ONE,
@@ -82,10 +82,10 @@ export default Layer.extend({
   },
   show(content = '提示内容') {
     this.content(content)
-    fadeIn(this, 20, 0.005)
+    fadeIn(this, 10, 0.01)
   },
   hide() {
-    fadeOut(this, 20, 0.005)
+    fadeOut(this, 10, 0.01)
   },
   content(content = '提示内容') {
     let {x, y} = this.bg

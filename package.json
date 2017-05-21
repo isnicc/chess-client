@@ -1,6 +1,9 @@
 {
   "scripts": {
-    "dev": "cocos run -p web"
+    "dev": "cocos run -p web",
+    "build4mac": "cocos compile -p mac",
+    "build4android": "cocos compile -p android --android-studio",
+    "build4ios": "cocos compile -p ios"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
