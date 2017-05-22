@@ -11,7 +11,7 @@ import cc, {
   LabelTTF,
 } from '@cc'
 import globalResources from '../../resources'
-import {isTouchInside, fadeIn, fadeOut} from '../../utils/core'
+import {bindClick, fadeIn, fadeOut} from '../../utils/core'
 
 export default LayerColor.extend({
   maxOpacity: 200, // 最大的遮罩层
@@ -19,13 +19,8 @@ export default LayerColor.extend({
   ctor() {
     this._super(cc.color(0, 0, 0, this.modelOpacity))
     this.setVisible(false)
-    this.m_touchListener = {
-      event: EventListener.TOUCH_ONE_BY_ONE,
-      swallowTouches: true,
-      onTouchBegan: (touch, event) => !(!event.getCurrentTarget().isVisible() || (!isTouchInside(event.getCurrentTarget(), touch))),
-    }
 
-    eventManager.addListener(this.m_touchListener, this)
+    bindClick(this)
 
     let size = cc.winSize
     this.loading = new Sprite(globalResources.ui_icon_load_a)
@@ -68,10 +63,10 @@ export default LayerColor.extend({
   },
   show(text = '加载中...') {
     this.text(text)
-    fadeIn(this, 10, 0.01, this.maxOpacity)
+    fadeIn(this, 25, 0.0066667, this.maxOpacity)
   },
   hide() {
-    fadeOut(this, 10, 0.01, this.maxOpacity)
+    fadeOut(this, 25, 0.0066667, this.maxOpacity)
   },
   text(text = '加载中...') {
     this.loading_label.setString(text)

@@ -9,7 +9,7 @@ import cc, {
   EventListener,
   LabelTTF,
 } from '@cc'
-import {isTouchInside, fadeIn, fadeOut} from '../../utils/core'
+import {bindClick, fadeIn, fadeOut} from '../../utils/core'
 import globalResources from '../../resources'
 import {Button} from '@ccui'
 
@@ -40,13 +40,13 @@ export default Layer.extend({
     for (let i = 0; i < 10; ++i) {
       nums[i] = new Button(num_btns[i][0], num_btns[i][1])
       nums[i].setPosition(size.width / 2 - 250 + i % 4 * 170, size.height / 2 + 50 - parseInt(i / 4) * 100)
-      nums[i].addClickEventListener(() => this.pushNumber(i))
+      bindClick(nums[i], () => this.pushNumber(i))
     }
     this.nums = nums
 
     this.delete_btn = new Button(delete_number_btn, delete_number_btn_on)
     this.delete_btn.setPosition(size.width / 2 - 250 + 425, size.height / 2 + 50 - 200)
-    this.delete_btn.addClickEventListener(() => this.popNumber())
+    bindClick(this.delete_btn, () => this.popNumber())
 
     this.inputs = []
     for (let i = 0; i < 6; ++i) {
@@ -57,8 +57,7 @@ export default Layer.extend({
       this.inputs[i][0].setPosition(size.width / 2 - 250 + i % 6 * 100, size.height / 2 + 140)
       this.inputs[i][1].setPosition(size.width / 2 - 250 + i % 6 * 100, size.height / 2 + 140)
     }
-
-    this.close_button.addClickEventListener(() => {
+    bindClick(this.close_button, () => {
       if (!this.parent.onClickEnterRoomClose) this.hide()
       else {
         if (this.parent.onClickEnterRoomClose())
@@ -66,13 +65,7 @@ export default Layer.extend({
       }
     })
 
-    eventManager.addListener({
-      event: EventListener.TOUCH_ONE_BY_ONE,
-      swallowTouches: true,
-      onTouchBegan: (touch, event) => {
-        return !(!event.getCurrentTarget().isVisible() || (!isTouchInside(event.getCurrentTarget(), touch)))
-      },
-    }, this)
+    bindClick(this)
     return true
   },
   onEnter() {
@@ -102,10 +95,10 @@ export default Layer.extend({
   },
 
   show() {
-    fadeIn(this, 10, 0.01)
+    fadeIn(this, 25, 0.0066667)
   },
   hide() {
-    fadeOut(this, 10, 0.01)
+    fadeOut(this, 25, 0.0066667)
   },
   setOpacity(opacity) {
     for (let node of this.children) {

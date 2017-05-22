@@ -10,7 +10,7 @@ import cc, {
 import {Button} from '@ccui'
 
 import globalResources from '../../resources'
-import {isTouchInside, fadeIn, fadeOut} from '../../utils/core'
+import {fadeIn, fadeOut, bindClick} from '../../utils/core'
 
 export default Layer.extend({
   ctor() {
@@ -46,16 +46,9 @@ export default Layer.extend({
     this.alert_content = new cc.LabelTTF('', 'Arial', 35)
     this.alert_content.setColor(cc.color(0, 0, 0))
 
-    this.close_button.addClickEventListener(() => this.hide())
-    this.ok_button.addClickEventListener(() => this.hide())
+    bindClick([this.close_button, this.ok_button], () => this.hide())
 
-    eventManager.addListener({
-      event: EventListener.TOUCH_ONE_BY_ONE,
-      swallowTouches: true,
-      onTouchBegan: (touch, event) => {
-        return !(!event.getCurrentTarget().isVisible() || (!isTouchInside(event.getCurrentTarget(), touch)))
-      },
-    }, this)
+    bindClick(this)
 
     return true
   },
@@ -82,10 +75,10 @@ export default Layer.extend({
   },
   show(content = '提示内容') {
     this.content(content)
-    fadeIn(this, 10, 0.01)
+    fadeIn(this, 25, 0.0066667)
   },
   hide() {
-    fadeOut(this, 10, 0.01)
+    fadeOut(this, 25, 0.0066667)
   },
   content(content = '提示内容') {
     let {x, y} = this.bg
@@ -93,7 +86,7 @@ export default Layer.extend({
     this.alert_content.setPosition(x, y + 10)
   },
   setOpacity(opacity) {
-    for(let node of this.children) {
+    for (let node of this.children) {
       node.setOpacity(opacity)
     }
   },

@@ -15,8 +15,13 @@ import HallScene, {resources as HallResources} from './Hall'
 import Loading from '../Common/Layer/Loading'
 import Alert from '../Common/Layer/Alert'
 import {uiPath} from '../utils/path'
-import {canWechatLogin} from '../utils/core'
+import {
+  canWechatLogin,
+  bindClick,
+  clickBling,
+} from '../utils/core'
 import {preload} from '../utils/promise'
+
 
 export const resources = {
   bg: uiPath('bg/login.png'),
@@ -43,13 +48,15 @@ export default Scene.extend({
 
     let loginBtn = null
     if (canWechat) {
-      loginBtn = new MenuItemImage(resources.wechatLogin, resources.wechatLogin_on, () =>
+      loginBtn = new MenuItemImage(resources.wechatLogin, resources.wechatLogin_on, () => {
+        clickBling()
         preload(Object.values(HallResources)).then(() =>
           director.runScene(new TransitionSlideInR(0.33, new HallScene))
         )
-      )
+      }, this)
     } else {
-      loginBtn = new MenuItemImage(resources.guestLogin, resources.guestLogin_on, () =>
+      loginBtn = new MenuItemImage(resources.guestLogin, resources.guestLogin_on, () => {
+        clickBling()
         preload(Object.values(HallResources)).then(() => {
             if (this.protocal_checkbox_val !== true) {
               this.alert.show('请同意用户使用协议')
@@ -58,32 +65,32 @@ export default Scene.extend({
             director.runScene(new TransitionSlideInR(0.33, new HallScene))
           }
         )
-      )
+      }, this)
     }
 
-    loginBtn.attr({
-      x: (size.width / 2) + 150,
-      y: size.height / 2 - 20,
-    })
+    loginBtn.setPosition((size.width / 2) + 150, size.height / 2 - 20)
 
     this.menu = new Menu(loginBtn)
-    this.menu.attr({
-      x: 0,
-      y: 0,
-    })
+    this.menu.setPosition(0, 0)
 
     this.protocal = new Sprite(resources.protocal)
-    this.protocal.attr({
-      x: (size.width / 2) + 150,
-      y: size.height / 2 - 110,
-    })
+    this.protocal.setPosition((size.width / 2) + 150, size.height / 2 - 110)
 
     this.protocal_checkbox_val = true
     this.protocal_checkbox = new Sprite(resources.checkbox_on)
-    this.protocal_checkbox.attr({
-      x: (size.width / 2) + 30,
-      y: size.height / 2 - 110,
-    })
+    this.protocal_checkbox.setPosition((size.width / 2) + 30, size.height / 2 - 110)
+
+    let cb = () => {
+      if (this.protocal_checkbox_val === true) {
+        this.protocal_checkbox_val = false
+        this.protocal_checkbox.setTexture(resources.checkbox)
+        return
+      }
+      this.protocal_checkbox.setTexture(resources.checkbox_on)
+      this.protocal_checkbox_val = true
+    }
+    bindClick(this.protocal, cb)
+    bindClick(this.protocal_checkbox, cb)
 
     this.loading = new Loading
     this.alert = new Alert
@@ -91,25 +98,6 @@ export default Scene.extend({
   },
   onEnter() {
     this._super()
-
-    const ev = {
-      event: EventListener.TOUCH_ONE_BY_ONE,
-      swallowTouches: true,
-      onTouchBegan: (touch, event) => {
-        let pos = touch.getLocation()
-        let target = event.getCurrentTarget()
-        if (!cc.rectContainsPoint(target.getBoundingBox(), pos)) return false
-        if (this.protocal_checkbox_val === true) {
-          this.protocal_checkbox_val = false
-          this.protocal_checkbox.setTexture(resources.checkbox)
-          return
-        }
-        this.protocal_checkbox.setTexture(resources.checkbox_on)
-        this.protocal_checkbox_val = true
-      },
-    }
-    eventManager.addListener({...ev}, this.protocal)
-    eventManager.addListener({...ev}, this.protocal_checkbox)
 
     this.addChild(this.bgSprite)
     this.addChild(this.menu)

@@ -5,3 +5,5 @@
 export const resPath = res => `res/${res}`
 
 export const uiPath = res => resPath(`ui/${res}`)
+
+export const audioPath = res => resPath(`audio/${res}`)

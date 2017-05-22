@@ -1,5 +1,5 @@
 import 'es6-promise/auto'
-import cc, {view, director, sys, TransitionFade} from '@cc'
+import cc, {view, director, sys, TransitionFade, audioEngine} from '@cc'
 import LoadingScene, {resources as loadingResources} from './Scene/Loading'
 import {preload} from './utils/promise'
 import HallScene, {resources as hallResources} from './Scene/Hall'
@@ -13,6 +13,7 @@ cc.game.onStart = () => {
   preload(Object.values(loadingResources)
     // , percent => cc.log(percent)
   )
+    .then(() => audioEngine.playMusic(loadingResources.audio_bg))
     .then(() => preload(Object.values(hallResources)))
     .then(() => director.runScene(new TransitionFade(0.33, new HallScene)))
 }

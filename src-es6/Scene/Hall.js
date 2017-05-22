@@ -4,6 +4,7 @@
 import cc, {
   Scene,
   director,
+  audioEngine,
 } from '@cc'
 import BgLayer from '../Layer/Hall/Bg'
 import UserLayer from '../Layer/Hall/User'
@@ -13,8 +14,9 @@ import {uiPath} from '../utils/path'
 import {loadImg, loadText} from '../utils/promise'
 import Loading from '../Common/Layer/Loading'
 import Alert from '../Common/Layer/Alert'
-import CreateNiuNiuRoom from '../Layer/Hall/CreateNiuNiuRoom'
-import Create13ShuiRoom from '../Layer/Hall/Create13ShuiRoom'
+import CreateRoom from '../Layer/Hall/CreateRoom'
+import Setting from '../Common/Layer/Setting'
+import {getBgVolumn, getEffectVolumn, setBgVolunm, setEffectVolunm} from '../utils/store'
 
 export const resources = {
   bg: uiPath('bg/hall.png'),
@@ -31,8 +33,10 @@ export const resources = {
 
   niuniu: uiPath('button/niuniu.png'),
   niuniu_on: uiPath('button/niuniu_on.png'),
+  niuniu_off: uiPath('button/niuniu_off.png'),
   _13shui: uiPath('button/13shui.png'),
   _13shui_on: uiPath('button/13shui_on.png'),
+  _13shui_off: uiPath('button/13shui_off.png'),
   game_bg: uiPath('bg/game_bg.png'),
 
   resume_room: uiPath('button/resume_room.png'),
@@ -68,15 +72,21 @@ export const resources = {
   num9_on: uiPath('button/num9_on.png'),
   delete_number_btn: uiPath('button/delete_number_btn.png'),
   delete_number_btn_on: uiPath('button/delete_number_btn_on.png'),
+  create_room: uiPath('button/create_room.png'),
+  create_room_on: uiPath('button/create_room_on.png'),
+  button_sieve: uiPath('button/sieve.png'),
+  progress: uiPath('bg/progress.png'),
+  progress_bg: uiPath('bg/progress_bg.png'),
 }
 
 export default Scene.extend({
-  ctor() {
+  async ctor() {
     this._super()
 
     this.bg = new BgLayer(resources.bg, resources.mm, resources.hall_bottom_bg, resources.text_anti_addiction, resources.message_bar, resources.message_icon, 'http://127.0.0.1:8000/res/message.txt')
     this.Iuser = new UserLayer(resources.avatar_border, resources.avatar_bg, resources.icon_diamond, resources.diamond_bar)
-    this.Igame = new GameLayer(resources.niuniu, resources.niuniu_on, resources._13shui, resources._13shui_on, resources.resume_room, resources.resume_room_on, resources.resume_room_off, resources.enter_room, resources.enter_room_on, resources.enter_room_off, resources.game_bg)
+    this.Igame = new GameLayer(resources.niuniu, resources.niuniu_on, resources.niuniu_off, resources._13shui, resources._13shui_on, resources._13shui_off, resources.resume_room, resources.resume_room_on, resources.resume_room_off, resources.enter_room, resources.enter_room_on, resources.enter_room_off, resources.game_bg)
+    this.setting = new Setting(resources.progress, resources.progress_bg, resources.button_sieve)
     this.loading = new Loading
     this.alert = new Alert
 
@@ -93,14 +103,13 @@ export default Scene.extend({
       [resources.num9, resources.num9_on]
     ], resources.delete_number_btn, resources.delete_number_btn_on)
 
-    this.createNiuNiu = new CreateNiuNiuRoom("牛牛", resources.alert_md)
-    this.create13Shui = new Create13ShuiRoom("十三水", resources.alert_md)
+    this.create_room = new CreateRoom(resources.alert_md, resources.create_room, resources.create_room_on)
 
-    // let img = await loadImg('http://127.0.0.1:8000/res/ui/avatar.png')
-    // this.Iuser.setAvatar(img)
-    // this.Iuser.setNickname('我甲你尚好就狗家')
-    // this.Iuser.setUserId(19999)
-    // this.Iuser.setDiamond(999)
+    let img = await loadImg('http://127.0.0.1:8000/res/ui/avatar.png')
+    this.Iuser.setAvatar(img)
+    this.Iuser.setNickname('我甲你尚好就狗家')
+    this.Iuser.setUserId(19999)
+    this.Iuser.setDiamond(999)
 
     return true
   },
@@ -111,10 +120,10 @@ export default Scene.extend({
     this.addChild(this.Iuser)
     this.addChild(this.Igame)
     this.addChild(this.enter_room_number)
-    this.addChild(this.createNiuNiu)
-    this.addChild(this.create13Shui)
+    this.addChild(this.create_room)
     this.addChild(this.loading)
     this.addChild(this.alert)
+    this.addChild(this.setting)
   },
   onEnterTransitionDidFinish() {
     this._super()
@@ -138,32 +147,65 @@ export default Scene.extend({
     return true
   },
   onEnterRoom(room_number) {
+    cc.log('进入房间', room_number)
     this.Igame.enter_room_btn.setEnabled(true)
     this.loading.show('加载中')
     this.scheduleOnce(() => {
       this.loading.hide()
       this.alert.show('不存在的房间')
     }, 0.5)
-    cc.log('进入房间', room_number)
   },
   onClickResumeRoom() {
     cc.log('resume')
   },
-  onClickAvatar() {
-    cc.log('avatar')
-  },
   onClick13Shui() {
     this.Igame._13shui_btn.setEnabled(false)
-    this.create13Shui.show()
+    this.create_room.show('十三水', {
+      round_count: [{label: '10 局', value: 1}, {label: '15 局', value: 2}, {label: '20 局', value: 3}],
+      player_count: [{label: '2 人', value: 1}, {label: '3 人', value: 2}, {label: '4 人', value: 3}],
+      master_mode: [{label: '无', value: 1}, {label: '轮庄', value: 2}, {label: '指定庄', value: 3}],
+    })
   },
   onClickNiuNiu() {
     this.Igame.niuniu_btn.setEnabled(false)
-    this.createNiuNiu.show()
+    this.create_room.show('牛牛', {
+      round_count: [{label: '10 局', value: 1}, {label: '15 局', value: 2}, {label: '20 局', value: 3}],
+      player_count: [{label: '2 人', value: 1}, {label: '3 人', value: 2}, {label: '4 人', value: 3}],
+      master_mode: [{label: '无', value: 1}, {label: '轮庄', value: 2}, {label: '指定庄', value: 3}],
+    })
   },
   onClickCreateRoomClose(type) {
     if (type === '牛牛')
       this.Igame.niuniu_btn.setEnabled(true)
     else this.Igame._13shui_btn.setEnabled(true)
+    return true
+  },
+  onClickCreateRoom(type, settings) {
+    cc.log('创建房间', type, settings)
+    if (type === '牛牛')
+      this.Igame.niuniu_btn.setEnabled(true)
+    else this.Igame._13shui_btn.setEnabled(true)
+    this.loading.show('加载中')
+    this.scheduleOnce(() => {
+      this.loading.hide()
+      this.alert.show('你无权创建房间')
+    }, 0.5)
+    return true
+  },
+  onClickAvatar() {
+    this.setting.setBgVolume(getBgVolumn())
+    this.setting.setEffectVolume(getEffectVolumn())
+    this.setting.show()
+  },
+  bgSliderUpdate(v) {
+    audioEngine.setMusicVolume(v)
+    setBgVolunm(v)
+  },
+  effectSliderUpdate(v) {
+    audioEngine.setEffectsVolume(v)
+    setEffectVolunm(v)
+  },
+  onClickSettingClose() {
     return true
   },
 })

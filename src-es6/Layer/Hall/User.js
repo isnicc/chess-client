@@ -9,7 +9,7 @@ import cc, {
   eventManager,
   EventListener,
 } from '@cc'
-import {isTouchInside} from '../../utils/core'
+import {bindClick} from '../../utils/core'
 
 export default Layer.extend({
   ctor(border, mask, diamond, diamond_bar) {
@@ -65,17 +65,7 @@ export default Layer.extend({
     this.avatarCliper.addChild(avatar)
     avatar.setScale(88 / avatar.width)
 
-    eventManager.addListener({
-      event: EventListener.TOUCH_ONE_BY_ONE,
-      swallowTouches: true,
-      onTouchBegan: (touch, event) => {
-        let flag = !(!event.getCurrentTarget().isVisible() || (!isTouchInside(event.getCurrentTarget(), touch)))
-        if (flag) {
-          this.parent.onClickAvatar()
-        }
-        return flag
-      },
-    }, avatar)
+    bindClick(avatar, () => this.parent.onClickAvatar())
   },
   setNickname(nickname) {
     this.nickname_text.setString(nickname)

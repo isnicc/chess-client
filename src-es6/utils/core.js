@@ -1,7 +1,13 @@
 /**
  * Created by zhuangjianjia on 17/5/2.
  */
-import cc from '@cc'
+import cc, {
+  EventListener,
+  eventManager,
+  audioEngine,
+} from '@cc'
+import globalResource from '../resources'
+import {Button} from '@ccui'
 
 export const canWechatLogin = () => {
   return false
@@ -42,3 +48,34 @@ export const fadeOut = (layer, step, interval, max = 255) => {
   layer.setOpacity(opacity)
   layer.schedule(opacityFunc, interval)
 }
+
+export const bindClick = (sprite, callback, bling = clickBling) => {
+  if (sprite instanceof Array) {
+    sprite.forEach(e => bindClick(e, callback))
+  }
+  else if (sprite instanceof Button) {
+    sprite.addClickEventListener(() => {
+      bling()
+      callback && callback()
+    })
+  } else {
+    const ev = {
+      event: EventListener.TOUCH_ONE_BY_ONE,
+      swallowTouches: true,
+      onTouchBegan: (touch, event) => {
+        let target = event.getCurrentTarget()
+        if (!target.isVisible()) return false
+        if (!isTouchInside(target, touch)) return false
+
+        if (callback) {
+          bling()
+          callback(touch, event)
+        }
+        return true
+      },
+    }
+    eventManager.addListener(ev, sprite)
+  }
+}
+
+export const clickBling = () => audioEngine.playEffect(globalResource.audio_click)
