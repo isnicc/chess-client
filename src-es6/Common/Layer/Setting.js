@@ -12,9 +12,32 @@ import {
   fadeIn,
   fadeOut,
   bindClick,
+  mapFadeInOutPanel,
 } from '../../utils/core'
 import globalResources from '../../resources'
 import {Button} from '@ccui'
+
+// 打补丁～
+ControlSlider.prototype.setOpacity = function (c) {
+  mapFadeInOutPanel.setOpacity.call(this, c)
+}
+
+ControlSlider.prototype.setVisible = function (b) {
+  if (b) {
+    if (this._real_x) {
+      this.setPosition(this._real_x, this._real_y)
+    }
+  } else {
+    this._real_x = this.x
+    this._real_y = this.y
+    this.setPosition(999999, 999999)
+  }
+  for (let node of this.children) {
+    node.setVisible(b)
+    if (b) node.setScale(1)
+    else node.setScale(0)
+  }
+}
 
 export default Layer.extend({
   ctor(progress, progress_bg, sieve) {
@@ -44,6 +67,7 @@ export default Layer.extend({
     bgSlider.setMinimumValue(0)
     bgSlider.setMaximumValue(1)
     bgSlider.setPosition(size.width / 2, size.height / 2 + 100)
+
     bgSlider.addTargetWithActionForControlEvents(this, (sender, controlEvent) => {
       this.parent.bgSliderUpdate && this.parent.bgSliderUpdate(sender.getValue().toFixed(2))
     }, cc.CONTROL_EVENT_VALUECHANGED)
@@ -57,10 +81,6 @@ export default Layer.extend({
       this.parent.effectSliderUpdate && this.parent.effectSliderUpdate(sender.getValue().toFixed(2))
     }, cc.CONTROL_EVENT_VALUECHANGED)
     this.effectSlider = effectSlider
-    return true
-  },
-  onEnter() {
-    this._super()
 
     this.addChild(this.bg)
     this.addChild(this.title)
@@ -68,7 +88,10 @@ export default Layer.extend({
     this.addChild(this.close_button)
     this.addChild(this.bgSlider)
     this.addChild(this.effectSlider)
-
+    return true
+  },
+  onEnter() {
+    this._super()
   },
   onEnterTransitionDidFinish() {
     this._super()
@@ -83,16 +106,12 @@ export default Layer.extend({
 
   },
   show() {
-    fadeIn(this, 25, 0.0066667)
+    this._show()
   },
   hide() {
-    fadeOut(this, 25, 0.0066667)
+    this._hide()
   },
-  setOpacity(opacity) {
-    for (let node of this.children) {
-      node.setOpacity(opacity)
-    }
-  },
+  ...mapFadeInOutPanel,
   setBgVolume(v) {
     this.bgSlider.setValue(v)
   },

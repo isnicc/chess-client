@@ -13,18 +13,34 @@ import {
   fadeIn,
   fadeOut,
   bindClick,
+  mapFadeInOutPanel,
 } from '../../utils/core'
 import globalResources from '../../resources'
 import {Button} from '@ccui'
+import {get} from '../../utils/registry'
 
 export default Layer.extend({
-  round_count: null, // 回合数
-  player_count: null, // 玩家数量
-  master_mode: null, // 坐庄模式
   settings: {
-    round_count: [],
-    player_count: [],
-    master_mode: [],
+    '牛牛': {
+      active: {
+        round_count: null, // 回合数
+        player_count: null, // 玩家数量
+        master_mode: null, // 坐庄模式
+      },
+      round_count: [],
+      player_count: [],
+      master_mode: [],
+    },
+    '十三水': {
+      active: {
+        round_count: null, // 回合数
+        player_count: null, // 玩家数量
+        master_mode: null, // 坐庄模式
+      },
+      round_count: [],
+      player_count: [],
+      master_mode: [],
+    },
   },
   ctor(alert_md, create_room, create_room_on) {
     this._super()
@@ -71,18 +87,13 @@ export default Layer.extend({
       if (!this.parent.onClickCreateRoom) this.hide()
       else {
         if (this.parent.onClickCreateRoom(this.type, {
-            round_count: this.round_count, // 回合数
-            player_count: this.player_count, // 玩家数量
-            master_mode: this.master_mode, // 坐庄模式
+            round_count: this.settings[this.type].active.round_count, // 回合数
+            player_count: this.settings[this.type].active.player_count, // 玩家数量
+            master_mode: this.settings[this.type].active.master_mode, // 坐庄模式
           }))
           this.hide()
       }
     })
-
-    return true
-  },
-  onEnter() {
-    this._super()
 
     this.addChild(this.bg)
     this.addChild(this.title)
@@ -92,6 +103,10 @@ export default Layer.extend({
     this.addChild(this.player_count_label)
     this.addChild(this.master_mode_label)
     this.addChild(this.create_room)
+    return true
+  },
+  onEnter() {
+    this._super()
   },
   onEnterTransitionDidFinish() {
     this._super()
@@ -105,81 +120,67 @@ export default Layer.extend({
     this._super()
 
   },
-  show(type, settings) {
+  show(type) {
     this.type = type
     this.sub_title.setString(`游戏类型:${type}`)
-    this.clearSettings()
-    this.createSettings(settings)
-    fadeIn(this, 25, 0.0066667)
+    this._show()
+    for (let n of this.children) {
+      if (!n.type) n.setVisible(true)
+      else if (n.type === type) n.setVisible(true)
+      else n.setVisible(false)
+    }
   },
   hide() {
-    fadeOut(this, 25, 0.0066667)
+    this._hide()
   },
-  clearSettings() {
-    for (let setting of this.settings.round_count) {
-      this.removeChild(setting)
-    }
-    for (let setting of this.settings.player_count) {
-      this.removeChild(setting)
-    }
-    for (let setting of this.settings.master_mode) {
-      this.removeChild(setting)
-    }
-    this.round_count = null
-    this.player_count = null
-    this.master_mode = null
-    this.settings = {
-      round_count: [],
-      player_count: [],
-      master_mode: [],
-    }
-  },
-  createSettings(settings) {
-    let map = ['round_count', 'player_count', 'master_mode']
-    let offsetY = {
+  initSettings(type, settings) {
+    const map = ['round_count', 'player_count', 'master_mode']
+    const offsetY = {
       round_count: 120,
       player_count: 10,
       master_mode: -100,
     }
 
+    const checkbox_texture = get('checkbox_texture', () => cc.textureCache.addImage(globalResources.checkbox2)),
+      checkbox_on_texture = get('checkbox_on_texture', () => cc.textureCache.addImage(globalResources.checkbox2_on))
+
     map.forEach(n => {
       if (settings[n]) {
         for (let i in settings[n]) {
           let setting = settings[n][i]
-          let checkbox = Sprite.create(globalResources.checkbox2)
+          let checkbox = new Sprite(checkbox_texture)
           let label = new LabelTTF(setting.label, '', 40)
           checkbox.setPosition(size.width / 2 - 200 + 180 * (i % 3), size.height / 2 + offsetY[n] - 60 * parseInt(i / 3))
-          label.setPosition(size.width / 2 - 245 + 180 * (i % 3) + 70, size.height / 2 + offsetY[n] - 60 * parseInt(i / 3))
+          checkbox.setVisible(false)
+          label.setPosition(size.width / 2 - 245 + 180 * (i % 3) + 75, size.height / 2 + offsetY[n] - 60 * parseInt(i / 3))
           label.setAnchorPoint(0, 0.5)
           label.setColor(cc.color('#000000'))
-          let cb = function () {
-            if (this[n] === setting.value) {
-              checkbox.setTexture(globalResources.checkbox2)
-              this[n] = null
+          label.setVisible(false)
+          let cb = () => {
+            if (this.settings[type]['active'][n] === setting.value) {
+              checkbox.setTexture(checkbox_texture)
+              this.settings[type]['active'][n] = null
             } else {
-              if (this[`${n}_checkbox`]) {
-                this[`${n}_checkbox`].setTexture(globalResources.checkbox2)
+              if (this.settings[type]['active'][`${n}_checkbox`]) {
+                this.settings[type]['active'][`${n}_checkbox`].setTexture(checkbox_texture)
               }
-              checkbox.setTexture(globalResources.checkbox2_on)
-              this[n] = setting.value
-              this[`${n}_checkbox`] = checkbox
+              checkbox.setTexture(checkbox_on_texture)
+              this.settings[type]['active'][n] = setting.value
+              this.settings[type]['active'][`${n}_checkbox`] = checkbox
             }
           }
           bindClick(checkbox, () => cb.call(this))
           bindClick(label, () => cb.call(this))
           if (parseInt(i) === 0) cb.call(this)
-          this.settings[n].push(checkbox)
-          this.settings[n].push(label)
+          this.settings[type][n].push(checkbox)
+          this.settings[type][n].push(label)
         }
-        for (let node of this.settings[n]) {
+        for (let node of this.settings[type][n]) {
+          node.type = type
           this.addChild(node)
         }
       }
     })
   },
-  setOpacity(opacity) {
-    for (let node of this.children) {
-      node.setOpacity(opacity)
-    }
-  },
+  ...mapFadeInOutPanel,
 })

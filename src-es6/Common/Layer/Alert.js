@@ -10,7 +10,7 @@ import cc, {
 import {Button} from '@ccui'
 
 import globalResources from '../../resources'
-import {fadeIn, fadeOut, bindClick} from '../../utils/core'
+import {fadeIn, fadeOut, bindClick, mapFadeInOutPanel} from '../../utils/core'
 
 export default Layer.extend({
   ctor() {
@@ -75,19 +75,15 @@ export default Layer.extend({
   },
   show(content = '提示内容') {
     this.content(content)
-    fadeIn(this, 25, 0.0066667)
+    this._show()
   },
   hide() {
-    fadeOut(this, 25, 0.0066667)
+    this._hide()
   },
+  ...mapFadeInOutPanel,
   content(content = '提示内容') {
     let {x, y} = this.bg
     this.alert_content.setString(content)
     this.alert_content.setPosition(x, y + 10)
-  },
-  setOpacity(opacity) {
-    for (let node of this.children) {
-      node.setOpacity(opacity)
-    }
   },
 })

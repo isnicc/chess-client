@@ -104,6 +104,17 @@ export default Scene.extend({
     ], resources.delete_number_btn, resources.delete_number_btn_on)
 
     this.create_room = new CreateRoom(resources.alert_md, resources.create_room, resources.create_room_on)
+    this.create_room.initSettings('牛牛', {
+      round_count: [{label: '10 局', value: 1}, {label: '15 局', value: 2}, {label: '20 局', value: 3}],
+      player_count: [{label: '2 人', value: 1}, {label: '3 人', value: 2}, {label: '4 人', value: 3}],
+      master_mode: [{label: '无', value: 1}, {label: '轮庄', value: 2}, {label: '指定庄', value: 3}],
+    })
+
+    this.create_room.initSettings('十三水', {
+      round_count: [{label: '10 局', value: 1}, {label: '15 局', value: 2}, {label: '20 局', value: 3}],
+      player_count: [{label: '2 人', value: 1}, {label: '3 人', value: 2}, {label: '4 人', value: 3}],
+      master_mode: [{label: '无', value: 1}, {label: '轮庄', value: 2}, {label: '指定庄', value: 3}],
+    })
 
     let img = await loadImg('http://127.0.0.1:8000/res/ui/avatar.png')
     this.Iuser.setAvatar(img)
@@ -119,11 +130,11 @@ export default Scene.extend({
     this.addChild(this.bg)
     this.addChild(this.Iuser)
     this.addChild(this.Igame)
+    this.addChild(this.setting)
     this.addChild(this.enter_room_number)
     this.addChild(this.create_room)
     this.addChild(this.loading)
     this.addChild(this.alert)
-    this.addChild(this.setting)
   },
   onEnterTransitionDidFinish() {
     this._super()

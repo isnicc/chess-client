@@ -11,13 +11,13 @@ import cc, {
   LabelTTF,
 } from '@cc'
 import globalResources from '../../resources'
-import {bindClick, fadeIn, fadeOut} from '../../utils/core'
+import {bindClick, fadeIn, fadeOut, mapFadeInOutPanel} from '../../utils/core'
 
 export default LayerColor.extend({
   maxOpacity: 200, // 最大的遮罩层
 
   ctor() {
-    this._super(cc.color(0, 0, 0, this.modelOpacity))
+    this._super(cc.color(0, 0, 0, this.maxOpacity))
     this.setVisible(false)
 
     bindClick(this)
@@ -63,11 +63,12 @@ export default LayerColor.extend({
   },
   show(text = '加载中...') {
     this.text(text)
-    fadeIn(this, 25, 0.0066667, this.maxOpacity)
+    this._show(25, 0.0066667, this.maxOpacity)
   },
   hide() {
-    fadeOut(this, 25, 0.0066667, this.maxOpacity)
+    this._hide(25, 0.0066667, this.maxOpacity)
   },
+  ...mapFadeInOutPanel,
   text(text = '加载中...') {
     this.loading_label.setString(text)
   },

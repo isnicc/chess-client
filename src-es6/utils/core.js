@@ -20,33 +20,39 @@ export const isTouchInside = (owner, touch) => {
 }
 
 export const fadeIn = (layer, step, interval, max = 255) => {
-  let opacity = 1,
-    opacityFunc = () => {
-      layer.setOpacity(opacity += step)
-      if (opacity >= max) {
-        layer.setOpacity(max)
-        layer.unschedule(opacityFunc)
+  return new Promise(resolve => {
+    let opacity = 1,
+      opacityFunc = () => {
+        layer.setOpacity(opacity += step)
+        if (opacity >= max) {
+          resolve()
+          layer.setOpacity(max)
+          layer.unschedule(opacityFunc)
+        }
       }
-    }
 
-  layer.setOpacity(opacity)
-  layer.setVisible(true)
-  layer.schedule(opacityFunc, interval)
+    layer.setOpacity(opacity)
+    layer.setVisible(true)
+    layer.schedule(opacityFunc, interval)
+  })
 }
 
 export const fadeOut = (layer, step, interval, max = 255) => {
-  let opacity = max,
-    opacityFunc = () => {
-      layer.setOpacity(opacity -= step)
-      if (opacity <= 0) {
-        layer.setOpacity(0)
-        layer.unschedule(opacityFunc)
-        layer.setVisible(false)
+  return new Promise(resolve => {
+    let opacity = max,
+      opacityFunc = () => {
+        layer.setOpacity(opacity -= step)
+        if (opacity <= 0) {
+          layer.setOpacity(0)
+          layer.unschedule(opacityFunc)
+          layer.setVisible(false)
+          resolve()
+        }
       }
-    }
 
-  layer.setOpacity(opacity)
-  layer.schedule(opacityFunc, interval)
+    layer.setOpacity(opacity)
+    layer.schedule(opacityFunc, interval)
+  })
 }
 
 export const bindClick = (sprite, callback, bling = clickBling) => {
@@ -64,8 +70,13 @@ export const bindClick = (sprite, callback, bling = clickBling) => {
       swallowTouches: true,
       onTouchBegan: (touch, event) => {
         let target = event.getCurrentTarget()
-        if (!target.isVisible()) return false
-        if (!isTouchInside(target, touch)) return false
+        if (target.parent) {
+          if (target.parent.isVisible() === false) return false
+          if (target.opacity <= 0) return false
+        }
+        if (target.isVisible() === false) return false
+        if (target.opacity <= 0) return false
+        if (isTouchInside(target, touch) === false) return false
 
         if (callback) {
           bling()
@@ -79,3 +90,24 @@ export const bindClick = (sprite, callback, bling = clickBling) => {
 }
 
 export const clickBling = () => audioEngine.playEffect(globalResource.audio_click)
+
+export const mapFadeInOutPanel = {
+  setOpacity(opacity) {
+    this._super && this._super(opacity)
+    for (let node of this.children) {
+      node.setOpacity(opacity)
+    }
+  },
+  _show(step = 25, inter = 0.0066667, maxOpacity = 255) {
+    for (let node of this.children) {
+      node.setVisible(true)
+    }
+    fadeIn(this, step, inter, maxOpacity)
+  },
+  async _hide(step = 25, inter = 0.0066667, maxOpacity = 255) {
+    await fadeOut(this, step, inter, maxOpacity)
+    for (let node of this.children) {
+      node.setVisible(false)
+    }
+  },
+}

@@ -9,7 +9,7 @@ import cc, {
   EventListener,
   LabelTTF,
 } from '@cc'
-import {bindClick, fadeIn, fadeOut} from '../../utils/core'
+import {bindClick, fadeIn, fadeOut, mapFadeInOutPanel} from '../../utils/core'
 import globalResources from '../../resources'
 import {Button} from '@ccui'
 
@@ -93,18 +93,13 @@ export default Layer.extend({
     this._super()
 
   },
-
-  show() {
-    fadeIn(this, 25, 0.0066667)
+  show()  {
+    this._show()
   },
   hide() {
-    fadeOut(this, 25, 0.0066667)
+    this._hide()
   },
-  setOpacity(opacity) {
-    for (let node of this.children) {
-      node.setOpacity(opacity)
-    }
-  },
+  ...mapFadeInOutPanel,
   pushNumber(i) {
     let len = this.numbers.length
     if (len === 6) {
