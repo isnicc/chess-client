@@ -21,6 +21,7 @@ import {
   clickBling,
 } from '../utils/core'
 import {preload} from '../utils/promise'
+import {get} from '../utils/registry'
 
 
 export const resources = {
@@ -51,7 +52,7 @@ export default Scene.extend({
       loginBtn = new MenuItemImage(resources.wechatLogin, resources.wechatLogin_on, () => {
         clickBling()
         preload(Object.values(HallResources)).then(() =>
-          director.runScene(new TransitionSlideInR(0.33, new HallScene))
+          director.runScene(new TransitionSlideInR(0.33, get('scene.hall', () => new HallScene)))
         )
       }, this)
     } else {
@@ -62,7 +63,7 @@ export default Scene.extend({
               this.alert.show('请同意用户使用协议')
               return
             }
-            director.runScene(new TransitionSlideInR(0.33, new HallScene))
+            director.runScene(new TransitionSlideInR(0.33, get('scene.hall', () => new HallScene)))
           }
         )
       }, this)
@@ -108,14 +109,11 @@ export default Scene.extend({
   },
   onEnterTransitionDidFinish() {
     this._super()
-
   },
   onExitTransitionDidStart(){
     this._super()
-
   },
   onExit() {
     this._super()
-
   },
 })

@@ -5,6 +5,7 @@ import {uiPath} from '../utils/path'
 import {preload} from '../utils/promise'
 import LoginScene, {resources as loginResources} from './Login'
 import globalResources from '../resources'
+import {get} from '../utils/registry'
 
 export const resources = {
   ...globalResources,
@@ -42,7 +43,7 @@ export default cc.Scene.extend({
     // this.scheduleOnce(() =>
     preload(Object.values(loginResources))
       .then(() =>
-        director.runScene(new TransitionSlideInR(0.33, new LoginScene))
+        director.runScene(new TransitionSlideInR(0.33, get('scene.login', () => new LoginScene)))
       )
     // , 0.0001)
   },

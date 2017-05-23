@@ -5,6 +5,7 @@ import cc, {
   Scene,
   director,
   audioEngine,
+  TransitionSlideInR,
 } from '@cc'
 import BgLayer from '../Layer/Hall/Bg'
 import UserLayer from '../Layer/Hall/User'
@@ -17,6 +18,9 @@ import Alert from '../Common/Layer/Alert'
 import CreateRoom from '../Layer/Hall/CreateRoom'
 import Setting from '../Common/Layer/Setting'
 import {getBgVolumn, getEffectVolumn, setBgVolunm, setEffectVolunm} from '../utils/store'
+import {get} from '../utils/registry'
+import NiuNiuRoom from './NiuNiuRoom'
+import _13ShuiRoom from './13ShuiRoom'
 
 export const resources = {
   bg: uiPath('bg/hall.png'),
@@ -192,14 +196,17 @@ export default Scene.extend({
     return true
   },
   onClickCreateRoom(type, settings) {
-    cc.log('创建房间', type, settings)
     if (type === '牛牛')
       this.Igame.niuniu_btn.setEnabled(true)
     else this.Igame._13shui_btn.setEnabled(true)
     this.loading.show('加载中')
     this.scheduleOnce(() => {
       this.loading.hide()
-      this.alert.show('你无权创建房间')
+      if (type === '牛牛') {
+        director.runScene(new TransitionSlideInR(0.33, get('scene.niuniu', () => new NiuNiuRoom)))
+      } else {
+        director.runScene(new TransitionSlideInR(0.33, get('scene.13shui', () => new _13ShuiRoom)))
+      }
     }, 0.5)
     return true
   },
