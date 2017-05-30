@@ -7,18 +7,16 @@ import HallScene, {resources as hallResources} from './Scene/Hall'
 import _13ShuiRoom, {resources as _13shuiRoomResources} from './Scene/13ShuiRoom'
 import {get} from './utils/registry'
 
-cc.game.onStart = () => {
+cc.game.onStart = async() => {
   view.enableRetina(sys.os === sys.OS_IOS)
   view.setDesignResolutionSize(1280, 720, cc.ResolutionPolicy.FIXED_HEIGHT)
   view.adjustViewPort(true)
   view.setOrientation(cc.ORIENTATION_LANDSCAPE)
 
-  preload(Object.values(loadingResources))
-    .then(() => {
-      audioEngine.setMusicVolume(getBgVolumn())
-      audioEngine.setEffectsVolume(getEffectVolumn())
-      audioEngine.playMusic(loadingResources.audio_bg, true)
-    })
-    .then(() => preload(Object.values(_13shuiRoomResources)))
-    .then(() => director.runScene(new TransitionFade(0.33, get('scene.hall', () => new _13ShuiRoom))))
+  await preload(Object.values(loadingResources))
+  audioEngine.setMusicVolume(getBgVolumn())
+  audioEngine.setEffectsVolume(getEffectVolumn())
+  audioEngine.playMusic(loadingResources.audio_bg, true)
+  await preload(Object.values(_13shuiRoomResources))
+  director.runScene(new TransitionFade(0.33, get('scene.hall', () => new _13ShuiRoom)))
 }

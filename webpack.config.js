@@ -1,6 +1,11 @@
 const webpack = require('webpack')
 const path = require('path')
-const PrepackWebpackPlugin = require('prepack-webpack-plugin').default
+
+// const PrepackWebpackPlugin = require('prepack-webpack-plugin').default
+
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
 
 module.exports = {
   entry: './src-es6/app.js',
@@ -11,6 +16,11 @@ module.exports = {
   devtool: "#source-map",
   resolve: {
     alias: {
+      src: resolve('src-es6'),
+      Scenes: resolve('src-es6/Scenes'),
+      Sprites: resolve('src-es6/Sprites'),
+      Layers: resolve('src-es6/Layers'),
+      Utils: resolve('src-es6/Utils'),
     },
   },
   module: {
