@@ -19,7 +19,6 @@ export const runScene = (() => async(sceneClass) => {
   director.runScene(new TransitionFade(0.33, scene))
 })()
 
-
 export const bindClick = (sprite, callback, bling = playBling) => {
   if (sprite instanceof Array) {
     sprite.forEach(e => bindClick(e, callback, bling))
@@ -58,3 +57,40 @@ export const isTouchInside = (owner, touch) => {
   let touchLocation = owner.getParent().convertToNodeSpace(touch.getLocation())
   return cc.rectContainsPoint(owner.getBoundingBox(), touchLocation)
 }
+
+export const fadeIn = (layer, step, interval, max = 255) => {
+  return new Promise(resolve => {
+    let opacity = 1,
+      opacityFunc = () => {
+        layer.setOpacity(opacity += step)
+        if (opacity >= max) {
+          resolve()
+          layer.setOpacity(max)
+          layer.unschedule(opacityFunc)
+        }
+      }
+
+    layer.setOpacity(opacity)
+    layer.setVisible(true)
+    layer.schedule(opacityFunc, interval)
+  })
+}
+
+export const fadeOut = (layer, step, interval, max = 255) => {
+  return new Promise(resolve => {
+    let opacity = max,
+      opacityFunc = () => {
+        layer.setOpacity(opacity -= step)
+        if (opacity <= 0) {
+          layer.setOpacity(0)
+          layer.unschedule(opacityFunc)
+          layer.setVisible(false)
+          resolve()
+        }
+      }
+
+    layer.setOpacity(opacity)
+    layer.schedule(opacityFunc, interval)
+  })
+}
+

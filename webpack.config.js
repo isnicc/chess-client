@@ -19,6 +19,7 @@ module.exports = {
       src: resolve('src-es6'),
       scenes: resolve('src-es6/scenes'),
       utils: resolve('src-es6/utils'),
+      commons: resolve('src-es6/commons'),
     },
   },
   module: {
