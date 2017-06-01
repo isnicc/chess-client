@@ -17,10 +17,8 @@ module.exports = {
   resolve: {
     alias: {
       src: resolve('src-es6'),
-      Scenes: resolve('src-es6/Scenes'),
-      Sprites: resolve('src-es6/Sprites'),
-      Layers: resolve('src-es6/Layers'),
-      Utils: resolve('src-es6/Utils'),
+      scenes: resolve('src-es6/scenes'),
+      utils: resolve('src-es6/utils'),
     },
   },
   module: {
