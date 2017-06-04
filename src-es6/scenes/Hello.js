@@ -1,13 +1,16 @@
 /**
- * Created by zhuangjianjia on 17-6-1.
+ * Created by zhuangjianjia on 17/6/1.
  */
 import cc, {Scene} from '@cc'
 
-export default class Hello extends Scene {
-  static resources = {}
+const resources = {}
 
-  constructor() {
-    super()
-
+const Class = Scene.extend({
+  ctor() {
+    this._super()
   }
-}
+})
+
+Class.resources = resources
+
+export default Class

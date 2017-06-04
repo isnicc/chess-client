@@ -5,6 +5,7 @@ import {preload} from 'utils/loader'
 import {init, playBg} from 'src/audio'
 import {ui, audio} from 'src/resources'
 import Hello from 'scenes/Hello'
+import NiuNiuRoom from 'scenes/NiuNiuRoom'
 
 game.onStart = async() => {
   view.enableRetina(sys.os === sys.OS_IOS)
@@ -18,5 +19,5 @@ game.onStart = async() => {
   playBg()
 
   // 载入Hello 场景
-  await runScene(Hello)
+  await runScene(NiuNiuRoom)
 }

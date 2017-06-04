@@ -21,11 +21,12 @@ export const runScene = (() => async(sceneClass) => {
 
 export const bindClick = (sprite, callback, bling = playBling) => {
   if (sprite instanceof Array) {
-    sprite.forEach(e => bindClick(e, callback, bling))
+    callArray(sprite, n => bindClick(n, callback, bling))
+    // sprite.forEach(e => bindClick(e, callback, bling))
   } else if (sprite instanceof Button) {
     sprite.addClickEventListener(() => {
-      bling()
-      callback && callback()
+      bling && bling()
+      callback && callback(sprite)
     })
   } else {
     const ev = {
@@ -42,8 +43,8 @@ export const bindClick = (sprite, callback, bling = playBling) => {
         if (isTouchInside(target, touch) === false) return false
 
         if (callback) {
-          bling()
-          callback(touch, event)
+          bling && bling()
+          callback(sprite, touch, event)
         }
         return true
       },
@@ -93,4 +94,8 @@ export const fadeOut = (layer, step, interval, max = 255) => {
     layer.schedule(opacityFunc, interval)
   })
 }
+
+export const offsetCenter = (node, offsetX = 0, offsetY = 0) => node.setPosition(cc.winSize.width / 2 + offsetX, cc.winSize.height / 2 + offsetY)
+
+export const callArray = (array, callback) => array.forEach((obj, i) => callback(obj, i))
 

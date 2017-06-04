@@ -3,11 +3,14 @@
  */
 import cc, {Scene} from '@cc'
 
-export default class Login extends Scene {
-  static resources = {}
+const resources = {}
 
-  constructor() {
-    super()
-
+const Class = Scene.extend({
+  ctor() {
+    this._super()
   }
-}
+})
+
+Class.resources = resources
+
+export default Class

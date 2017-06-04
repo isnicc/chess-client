@@ -5,10 +5,9 @@ import cc, {LayerColor, Sprite, RepeatForever, RotateBy, LabelTTF} from '@cc'
 import {ui} from 'src/resources'
 import {bindClick, fadeIn, fadeOut} from 'utils/core'
 
-
-export default class Loading extends LayerColor {
-  constructor() {
-    super(cc.color(0, 0, 0, 0))
+const Class = LayerColor.extend({
+  ctor() {
+    this._super(cc.color(0, 0, 0, 0))
     this.hide()
 
     const size = cc.winSize
@@ -25,26 +24,25 @@ export default class Loading extends LayerColor {
     this.addChild(this.icon)
     this.addChild(this.label)
     bindClick(this)
-  }
-
+  },
   setTitle(title, color) {
     this.label.setString(title)
     color && this.label.setColor(color)
-  }
+  },
 
   show(step = 25, inter = 0.0066667, maxOpacity = 200) {
     for (let node of this.children) {
       node.setVisible(true)
     }
     fadeIn(this, step, inter, maxOpacity)
-  }
+  },
 
   async hide(step = 25, inter = 0.0066667, maxOpacity = 200) {
     await fadeOut(this, step, inter, maxOpacity)
     for (let node of this.children) {
       node.setVisible(false)
     }
-  }
+  },
 
   setOpacity(opacity) {
     super.setOpacity(opacity)
@@ -52,4 +50,6 @@ export default class Loading extends LayerColor {
       node.setOpacity(opacity)
     }
   }
-}
+})
+
+export default Class

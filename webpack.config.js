@@ -20,6 +20,9 @@ module.exports = {
       scenes: resolve('src-es6/scenes'),
       utils: resolve('src-es6/utils'),
       commons: resolve('src-es6/commons'),
+      layers: resolve('src-es6/layers'),
+      sprites: resolve('src-es6/sprites'),
+      datastructs: resolve('src-es6/datastructs'),
     },
   },
   module: {

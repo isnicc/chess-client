@@ -2,59 +2,72 @@
  * Created by zhuangjianjia on 17/6/2.
  */
 
+const permutation = arr => {
+  let pArr = [], usedChars = []
+  let m = arr => {
+    for (let i = 0; i < arr.length; ++i) {
+      let ch = arr.splice(i, 1)[0]
+      usedChars.push(ch)
+      if (arr.length === 0) {
+        pArr.push(usedChars.slice())
+      }
+      m(arr)
+      arr.splice(i, 0, ch)
+      usedChars.pop()
+    }
+    return pArr
+  }
+  return m(arr)
+}
 
-// //计算核心函数`sufuCaculate`，这里扩展了`Array`类，只是为了方便调用，前提是得取个个性一点的名字，不然哪一天官方也出个同名的内置方法，你的项目就悲催了！
-// Array.prototype.sufuCaculate = function () {
-//   if((!this)||this.length<5){throw new Error('sufuCaculate()参数错误')}
-//   var card5 = this, before10Count = 0, after10Count = 0, maxSameCount = getMaxSameCount(this);
-//   if(maxSameCount == 4){return 14} //4张相同的,返回'炸弹'
-//   if(this.every(function (x) {return x<5;})){return 13}//5张牌都小于5,返回'五小'
-//   if(this.every(function (x) {return x>10;})){return 12}//5张牌全为花,返回'五花'
-//
-//   turnTrueValue(card5);//把大于10的牌变成10,并计算等于10的牌的数量
-//   if(before10Count == 1 && after10Count == 5){return 11}//5张牌中一张为10，另外4张为花,返回'四花'
-// //用了三层的for循环才实现了，求前辈们指点好一点的逻辑！
-//   for(var i = 0; i<3; i++){
-//     for(var j = i+1;j<4;j++){
-//       for(var k = j+1;k<5;k++){
-//         if(sum([card5[i],card5[j],card5[k]]) == 0){
-//           var copy = card5.slice();
-//           delete copy[i];
-//           delete copy[j];
-//           delete copy[k];
-//           var a = sum(copy.filter(function(){return true}));
-//           if(a == 0){return 10}//牛牛
-//           else{return a}//a牛
-//         }
-//       }
-//     }
-//   }
-//   return 0;//'无牛'
-//   //求和并求于10
-//   function sum(arr){
-//     return arr.reduce(function(a,b){return a+b})%10
-//   }
-//   //获得最大相同牌数
-//   function getMaxSameCount(card5){
-//     var count = 1, sameCardCount = 1;
-//     for(var i = 0; i<5; i++){
-//       for(var j = 0; j<5;j++){
-//         if(j == i){continue}
-//         if(card5.indexOf(card5[i],j)>0){
-//           count++;
-//         }
-//       }
-//       sameCardCount = Math.max(count,sameCardCount);
-//       count = 1;
-//     }
-//     return sameCardCount;
-//   }
-//   //把大于10的牌全部转为10
-//   function turnTrueValue(card5){
-//     for(var i = 0; i<5; i++){
-//       if(card5[i] === 10){before10Count++}
-//       card5[i] = card5[i]>=10 ? 10 : card5[i];
-//       if(card5[i] === 10){after10Count++}
-//     }
-//   }
-// };
+export const bullSpecial = arr => {
+  arr.sort((a, b) => a.getValue() > b.getValue())
+
+  if (arr[1].getValue() === arr[2].getValue() && arr[2].getValue() === arr[3].getValue() && (arr[0].getValue() === arr[3].getValue() || arr[1].getValue() === arr[4].getValue())) {
+    return 14
+  }
+  if (arr.every(v => v.getValue() < 5) && arr.reduce((v, v2) => v + v2.getValue(), 0) < 10) {
+    return 13
+  }
+  if (arr[0].getValue() > 10) {
+    return 12
+  }
+  if (arr[0].getValue() === 10 && arr[1].getValue() > 10) {
+    return 11
+  }
+  return 0
+}
+
+export const bullNum = arr => {
+  if (arr.slice(0, 3).reduce((v1, v2) => v1 + v2.getCmpValue(), 0) % 10 === 0) {
+    let mod = arr.slice(3).reduce((v1, v2) => v1 + v2.getCmpValue(), 0) % 10
+    if (mod === 0) {
+      return 10
+    } else {
+      return mod
+    }
+  }
+  return 0
+}
+
+export const bull = arr => {
+  let num = bullNum(arr)
+  let snum = bullSpecial(arr)
+  if (snum > 10) return snum
+  return num
+}
+
+export const bestBull = arr => {
+  let num = bullSpecial(arr)
+  if (num > 0) return [num, arr]
+
+  let all = permutation(arr)
+  let result = {}
+  for (let each of all) {
+    result[bullNum(each)] = each
+  }
+  for (let i = 10; i >= 0; --i) {
+    if (result[i]) return [i, result[i]]
+  }
+  return [0, arr]
+}
