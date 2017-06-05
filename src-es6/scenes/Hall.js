@@ -12,5 +12,6 @@ const Class = Scene.extend({
 })
 
 Class.resources = resources
+Class.className = 'Hall'
 
 export default Class

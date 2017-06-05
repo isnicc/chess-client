@@ -58,7 +58,8 @@ const Class = Layer.extend({
     },
 
     setOpacity(opacity) {
-      super.setOpacity(opacity)
+      this._super(opacity)
+
       for (let node of this.children) {
         node.setOpacity(opacity)
       }

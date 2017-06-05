@@ -2,8 +2,10 @@
  * Created by zhuangjianjia on 17-6-1.
  */
 import cc, {
-  director, TransitionFade,
-  EventListener, eventManager,
+  director,
+  TransitionFade,
+  EventListener,
+  eventManager,
 } from '@cc'
 import {preload} from 'utils/loader'
 import {get} from 'utils/registry'
@@ -11,12 +13,13 @@ import {Button} from '@ccui'
 import {playBling} from 'src/audio'
 
 export const runScene = (() => async(sceneClass) => {
-  let scene = await get(sceneClass.toString(), async() => {
+  let scene = await get(sceneClass.className || sceneClass.toString(), async() => {
     const resources = sceneClass.resources || []
     await preload(resources)
     return new sceneClass
   })
-  director.runScene(new TransitionFade(0.33, scene))
+  let transition = new TransitionFade(1, scene)
+  director.runScene(transition)
 })()
 
 export const bindClick = (sprite, callback, bling = playBling) => {

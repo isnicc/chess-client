@@ -6,7 +6,7 @@ import {ui} from 'src/resources'
 import {bindClick, fadeIn, fadeOut} from 'utils/core'
 
 const Class = LayerColor.extend({
-  ctor() {
+  ctor(text = '加载中...') {
     this._super(cc.color(0, 0, 0, 0))
     this.hide()
 
@@ -18,7 +18,7 @@ const Class = LayerColor.extend({
     let action = new RepeatForever(new RotateBy(2, -360, -360))
     this.icon.runAction(action)
 
-    this.label = new LabelTTF('加载中...', 'Arial', 20)
+    this.label = new LabelTTF(text, 'Arial', 20)
     this.label.setPosition(size.width / 2, size.height / 2 - size.height / 8)
 
     this.addChild(this.icon)
@@ -45,7 +45,8 @@ const Class = LayerColor.extend({
   },
 
   setOpacity(opacity) {
-    super.setOpacity(opacity)
+    this._super(opacity)
+
     for (let node of this.children) {
       node.setOpacity(opacity)
     }

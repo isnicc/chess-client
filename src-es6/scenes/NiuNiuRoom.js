@@ -44,5 +44,6 @@ const Class = Scene.extend({
 })
 
 Class.resources = resources
+Class.className = 'NiuNiuRoom'
 
 export default Class

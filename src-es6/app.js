@@ -2,8 +2,7 @@ import 'es6-promise/auto'
 import cc, {view, sys, audioEngine, game} from '@cc'
 import {runScene} from 'utils/core'
 import {preload} from 'utils/loader'
-import {init, playBg} from 'src/audio'
-import {ui, audio} from 'src/resources'
+import {ui} from 'src/resources'
 import Hello from 'scenes/Hello'
 import NiuNiuRoom from 'scenes/NiuNiuRoom'
 
@@ -14,10 +13,7 @@ game.onStart = async() => {
   view.setOrientation(cc.ORIENTATION_LANDSCAPE)
 
   await preload(ui)
-  await preload(audio)
-  init()
-  playBg()
 
   // 载入Hello 场景
-  await runScene(NiuNiuRoom)
+  await runScene(Hello)
 }
