@@ -19,6 +19,15 @@ export const ui = {
   unready: 'res/game/common/buttons/unready.png',
   unready_on: 'res/game/common/buttons/unready_on.png',
   unready_off: 'res/game/common/buttons/unready_off.png',
+
+  checkbox1: 'res/ui/button/checkbox.png',
+  checkbox1_on: 'res/ui/button/checkbox_on.png',
+  checkbox2: 'res/ui/button/checkbox2.png',
+  checkbox2_on: 'res/ui/button/checkbox2_on.png',
+
+  progress: 'res/ui/bg/progress.png',
+  progress_bg: 'res/ui/bg/progress_bg.png',
+  sieve: 'res/ui/button/sieve.png',
 }
 
 export const audio = {

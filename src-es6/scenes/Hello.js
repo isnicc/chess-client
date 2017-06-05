@@ -27,6 +27,7 @@ const Class = Scene.extend({
     this.addChild(this.bg)
     this.addChild(this.logo)
     this.addChild(this.loadText)
+
   },
 
   async onEnter() {
@@ -34,6 +35,7 @@ const Class = Scene.extend({
     await preload(audio)
     init()
     playBg()
+
     this.scheduleOnce(() => runScene(LoginScene), 1.5)
   },
 })

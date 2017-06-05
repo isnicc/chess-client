@@ -12,7 +12,7 @@ import {get} from 'utils/registry'
 import {Button} from '@ccui'
 import {playBling} from 'src/audio'
 
-export const runScene = (() => async(sceneClass) => {
+export const runScene = async sceneClass => {
   let scene = await get(sceneClass.className || sceneClass.toString(), async() => {
     const resources = sceneClass.resources || []
     await preload(resources)
@@ -20,12 +20,11 @@ export const runScene = (() => async(sceneClass) => {
   })
   let transition = new TransitionFade(1, scene)
   director.runScene(transition)
-})()
+}
 
 export const bindClick = (sprite, callback, bling = playBling) => {
   if (sprite instanceof Array) {
     callArray(sprite, n => bindClick(n, callback, bling))
-    // sprite.forEach(e => bindClick(e, callback, bling))
   } else if (sprite instanceof Button) {
     sprite.addClickEventListener(() => {
       bling && bling()
@@ -99,6 +98,22 @@ export const fadeOut = (layer, step, interval, max = 255) => {
 }
 
 export const offsetCenter = (node, offsetX = 0, offsetY = 0) => node.setPosition(cc.winSize.width / 2 + offsetX, cc.winSize.height / 2 + offsetY)
+
+export const offsetUpLeft = (node, offsetX = 0, offsetY = 0) => node.setPosition(offsetX, cc.winSize.height - offsetY)
+
+export const offsetUpRight = (node, x = 0, y = 0) => node.setPosition(cc.winSize.width - x, cc.winSize.height - y)
+
+export const offsetDownRight = (node, x = 0, y = 0) => node.setPosition(cc.winSize.width - x, y)
+
+export const offsetDownLeft = (node, x = 0, y = 0) => node.setPosition(x, y)
+
+export const offsetUp = (node, offset = 0) => offsetCenter(node, 0, cc.winSize.height / 2 - offset)
+
+export const offsetRight = (node, offset = 0) => offsetCenter(node, cc.winSize.width / 2 - offset, 0)
+
+export const offsetDown = (node, offset = 0) => offsetCenter(node, 0, offset - cc.winSize.height / 2)
+
+export const offsetLeft = (node, offset = 0) => offsetCenter(node, offset - cc.winSize.width / 2, 0)
 
 export const callArray = (array, callback) => array.forEach((obj, i) => callback(obj, i))
 

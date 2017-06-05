@@ -3,19 +3,24 @@
  */
 import cc, {LabelTTF} from '@cc'
 import Prompt, {TYPE_SM} from 'commons/Prompt'
-import {offsetCenter} from 'utils/core'
+import {offsetCenter, bindClick} from 'utils/core'
 
 const Class = Prompt.extend({
-  ctor() {
+  ctor(flag = false) {
     this._super(TYPE_SM)
 
-    this.message = new LabelTTF('', '', 40)
+    this.message = new LabelTTF('', '', 30)
     this.message.setColor(cc.color('#000000'))
     offsetCenter(this.message, 0, -20)
     this.addChild(this.message)
+
+    if (flag) {
+      bindClick(this)
+    }
   },
-  show(title) {
-    this.message.setString(title)
+  show(msg, title = null) {
+    title && this.setTitle(title)
+    this.message.setString(msg)
     let {width, height} = this.message.getContentSize()
     if (width <= 450) {
       this.message.setDimensions(cc.size(0, 0))
@@ -23,9 +28,6 @@ const Class = Prompt.extend({
       this.message.setDimensions(cc.size(450, Math.ceil(width / 450) * height))
     }
     this._super()
-  },
-  async hide() {
-    await this._super()
   },
 })
 

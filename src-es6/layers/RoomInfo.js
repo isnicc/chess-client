@@ -9,10 +9,6 @@ const Class = Layer.extend({
   ctor(resources) {
     this._super()
 
-    this.bg = new Sprite(resources.bg)
-    offsetCenter(this.bg)
-
-    this.addChild(this.bg)
   }
 })
 

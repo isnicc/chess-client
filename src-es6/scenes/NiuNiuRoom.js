@@ -1,10 +1,11 @@
 /**
  * Created by zhuangjianjia on 17/6/1.
  */
-import cc, {Scene, winSize} from '@cc'
+import cc, {Scene, Sprite, winSize} from '@cc'
 import CardData from 'datastructs/Card'
 import NiuNiuPanel from 'layers/NiuNiuPanel'
 import RoomInfo from 'layers/RoomInfo'
+import {offsetCenter, callArray, bindClick} from 'utils/core'
 
 const resources = {
   bg: 'res/game/niuniu/bg/bg.png',
@@ -25,9 +26,13 @@ const Class = Scene.extend({
 
     this.roomUsers = '所有玩家信息 ＋ 玩家状态'
 
+    this.bg = new Sprite(resources.bg)
+    offsetCenter(this.bg)
+
     this.roomInfo = new RoomInfo(resources)
     this.niuniuPanel = new NiuNiuPanel(resources)
 
+    this.addChild(this.bg)
     this.addChild(this.roomInfo)
     this.addChild(this.niuniuPanel)
 
