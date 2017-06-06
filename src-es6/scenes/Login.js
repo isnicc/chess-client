@@ -23,6 +23,8 @@ import Alert from 'commons/Alert'
 import Loading from 'commons/Loading'
 import {Button} from '@ccui'
 import Hall from 'scenes/Hall'
+import Semver from 'semver'
+import {initialization} from 'src/sockets/index'
 
 const resources = {
   bg: 'res/ui/bg/login.png',
@@ -38,8 +40,8 @@ const Class = Scene.extend({
   ctor() {
     this._super()
 
-   this.alert = new Alert(true)
-   this.loading = new Loading
+    this.alert = new Alert(true)
+    this.loading = new Loading
 
     this.versionLabel = new LabelTTF(`版本号:${VERSION}`, '', 30)
     offsetDownRight(this.versionLabel, 100, 40)
@@ -72,14 +74,31 @@ const Class = Scene.extend({
     this.addChild(this.loginBtn)
     this.addChild(this.protocalCheckbox)
     this.addChild(this.protocalLabel)
-    this.addChild(this.alert)
     this.addChild(this.loading)
+    this.addChild(this.alert)
   },
-
+  onEnter() {
+    this._super()
+  },
   onEnterTransitionDidFinish() {
     this._super()
 
     // 检测版本号
+    if (!Semver.valid(VERSION)) {
+      cc.error('错误的版本号')
+      // 不合法的版本号，
+      this.alert.show('当前版本号有错，请重新下载游戏', '错误', false)
+    }
+
+    this.loading.show()
+    initialization({
+      onWsError(evt) {
+        cc.log('onWsError', evt)
+      },
+      onWsClose(evt) {
+        cc.log('onWsClose', evt)
+      },
+    })
   },
 })
 

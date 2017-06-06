@@ -1,6 +1,7 @@
 /**
  * Created by zhuangjianjia on 17-6-1.
  */
+
 const tree = {}
 
 export const set = (k, v) => tree[k] = v
