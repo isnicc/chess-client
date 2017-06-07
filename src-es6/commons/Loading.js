@@ -28,6 +28,7 @@ const Class = LayerColor.extend({
   setTitle(title, color) {
     this.label.setString(title)
     color && this.label.setColor(color)
+    return this
   },
 
   show(step = 25, inter = 0.0066667, maxOpacity = 200) {

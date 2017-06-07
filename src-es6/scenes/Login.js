@@ -27,6 +27,8 @@ import Semver from 'semver'
 import {initialization, bindScene} from 'src/socket'
 import {getUser} from 'src/auth'
 import HelloPacket from 'packets/Hello'
+import LoginPacket from 'packets/Login'
+import Packet from 'datastructs/Packet'
 
 const resources = {
   bg: 'res/ui/bg/login.png',
@@ -95,20 +97,9 @@ const Class = Scene.extend({
     }
 
     this.loading.show()
-    initialization({
-      onWsError(evt) {
-        cc.error('链接不上服务器')
-        this.alert && this.alert.show('无法链接上服务器', '错误', false)
-      },
-      onWsClose(evt) {
-        cc.error('无法链接到服务器')
-        this.alert && this.alert.show('无法链接到服务器', '错误', false)
-      },
-    })
+    initialization()
   },
   onWsOpen({target}) {
-    cc.log('onWsOpen')
-
     // 发送hello消息， 取得服务器主要配置[服务器要求版本号等等]
     HelloPacket(target)
 
@@ -119,8 +110,27 @@ const Class = Scene.extend({
     //   this.loading.hide()
     // }
   },
-  onWsMessage(evt) {
+  onWsMessage({data, target}) {
+    let packet = new Packet(data)
+    cc.log('接收', packet.toHexString())
 
+    switch (packet.readHead()) {
+      case 0x00:
+        let reqVer = packet.readString()
+        cc.log('比较版本号', VERSION, reqVer)
+        if (!Semver.satisfies(VERSION, reqVer)) {
+          this.alert.show('当前版本号太旧，请更新游戏', '错误', false)
+        } else {
+          let loginKey = getUser().login_key || 'hello'
+          if (loginKey) {
+            this.loading.setTitle('登陆中').show()
+            LoginPacket(target, loginKey)
+          }
+        }
+        break;
+      default:
+        cc.log('未处理封包')
+    }
   },
 })
 

@@ -37,7 +37,7 @@ export default class Packet {
       this.writeHead(data)
       return
     } else {
-      if (data instanceof Buffer || typeof data === 'string') {
+      if (data instanceof Buffer || typeof data === 'string' || data instanceof ArrayBuffer) {
         this.buffer = data instanceof Buffer ? data : Buffer.from(data)
         this.length = this.readPackLength()
         this.size = this.length
@@ -51,19 +51,19 @@ export default class Packet {
   }
 
   writeHead(head) {
-    this.buffer.writeUInt16BE(head, 0, false)
+    this.buffer.writeUInt16BE(head, 4, false)
   }
 
   writePackLength(packLength) {
-    this.buffer.writeUInt32BE(packLength, 2, false)
+    this.buffer.writeUInt32BE(packLength, 0, false)
   }
 
   readHead() {
-    return this.buffer.readUInt16BE(0, false)
+    return this.buffer.readUInt16BE(4, false)
   }
 
   readPackLength() {
-    return this.buffer.readUInt32BE(2, false)
+    return this.buffer.readUInt32BE(0, false)
   }
 
   lengthWritable(length) {

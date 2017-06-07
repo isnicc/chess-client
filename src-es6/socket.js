@@ -10,9 +10,12 @@ let scene = null
 export const getConnect = () => {
   if (!socket) {
     socket = new WebSocket(`ws://${WS_IP}:${WS_PORT}`)
+    socket.binaryType = 'arraybuffer'
   }
   return socket
 }
+
+export const close = () => socket.close()
 
 export const bindScene = _scene => scene = _scene
 

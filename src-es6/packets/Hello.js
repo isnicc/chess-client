@@ -1,14 +1,16 @@
 /**
  * Created by zhuangjianjia on 17-6-7.
  */
+import cc from '@cc'
 import {HELLO} from 'packets/headers'
 import Packet from 'datastructs/Packet'
+import {VERSION} from 'src/constances'
 
 export default socket => {
   let packet = new Packet(HELLO)
 
-  packet.writeString('hello')
+  packet.writeRandomByte()
 
-  cc.log(packet.toHexString())
+  cc.log('发送封包', packet.toHexString())
   socket.send(packet.toString())
 }

@@ -13,6 +13,8 @@ export const TYPE_SM = 'sm'
 const Class = Layer.extend({
     ctor(type = TYPE_MD) {
       this._super()
+
+      this.isShow = false
       let size = cc.winSize
       this.hide()
 
@@ -44,6 +46,7 @@ const Class = Layer.extend({
     },
 
     show(step = 25, inter = 0.0066667, maxOpacity = 255) {
+      this.isShow = true
       for (let node of this.children) {
         node.setVisible(true)
       }
@@ -51,6 +54,7 @@ const Class = Layer.extend({
     },
 
     async hide(step = 25, inter = 0.0066667, maxOpacity = 255) {
+      this.isShow = false
       await fadeOut(this, step, inter, maxOpacity)
       for (let node of this.children) {
         node.setVisible(false)
