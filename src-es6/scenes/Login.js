@@ -24,7 +24,9 @@ import Loading from 'commons/Loading'
 import {Button} from '@ccui'
 import Hall from 'scenes/Hall'
 import Semver from 'semver'
-import {initialization} from 'src/sockets/index'
+import {initialization, bindScene} from 'src/socket'
+import {getUser} from 'src/auth'
+import HelloPacket from 'packets/Hello'
 
 const resources = {
   bg: 'res/ui/bg/login.png',
@@ -79,6 +81,8 @@ const Class = Scene.extend({
   },
   onEnter() {
     this._super()
+
+    bindScene(this)
   },
   onEnterTransitionDidFinish() {
     this._super()
@@ -93,12 +97,30 @@ const Class = Scene.extend({
     this.loading.show()
     initialization({
       onWsError(evt) {
-        cc.log('onWsError', evt)
+        cc.error('链接不上服务器')
+        this.alert && this.alert.show('无法链接上服务器', '错误', false)
       },
       onWsClose(evt) {
-        cc.log('onWsClose', evt)
+        cc.error('无法链接到服务器')
+        this.alert && this.alert.show('无法链接到服务器', '错误', false)
       },
     })
+  },
+  onWsOpen({target}) {
+    cc.log('onWsOpen')
+
+    // 发送hello消息， 取得服务器主要配置[服务器要求版本号等等]
+    HelloPacket(target)
+
+    // let loginKey = getUser().login_key
+    // if (loginKey) {
+    //   cc.log('直接登录')
+    // } else {
+    //   this.loading.hide()
+    // }
+  },
+  onWsMessage(evt) {
+
   },
 })
 

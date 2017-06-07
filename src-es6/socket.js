@@ -25,7 +25,7 @@ export const callSceneCallback = (callBackName, evt, defaultCallback = {}) => {
     callDefault = scene[callBackName].call(scene, evt)
   }
   if (callDefault !== false) {
-    defaultCallback[callBackName] && defaultCallback[callBackName].call(getConnect(), evt)
+    defaultCallback[callBackName] && defaultCallback[callBackName].call(scene, evt)
   }
 }
 

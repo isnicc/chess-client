@@ -6,6 +6,12 @@ import {ui} from 'src/resources'
 import Hello from 'scenes/Hello'
 import NiuNiuRoom from 'scenes/NiuNiuRoom'
 
+import {Buffer} from 'safe-buffer'
+window.Buffer = Buffer
+
+import Packet from 'datastructs/Packet'
+window.Packet = Packet
+
 game.onStart = async() => {
   view.enableRetina(sys.os === sys.OS_IOS)
   view.setDesignResolutionSize(1280, 720, cc.ResolutionPolicy.FIXED_HEIGHT)

@@ -23,6 +23,7 @@ module.exports = {
       layers: resolve('src-es6/layers'),
       sprites: resolve('src-es6/sprites'),
       datastructs: resolve('src-es6/datastructs'),
+      packets: resolve('src-es6/packets'),
     },
   },
   module: {
