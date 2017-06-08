@@ -141,6 +141,7 @@ export default class Packet {
     }
     let buf = Buffer.from(string)
     this.writeUInt(buf.length)
+    this.lengthWritable(buf.length)
     this.buffer.write(buf.toString(), this.length, buf.length)
     this.length += buf.length
   }
@@ -261,7 +262,7 @@ export default class Packet {
 
   toString() {
     this.writePackLength(this.length)
-    return this.buffer.toString('utf8', 0, this.length)
+    return this.buffer.toString('ascii', 0, this.length)
   }
 
   toHexString(sep = ' ') {

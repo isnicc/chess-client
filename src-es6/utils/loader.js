@@ -9,3 +9,11 @@ export const preload = (resources, ProgressCallback) => new Promise((resolve, re
   ProgressCallback && ProgressCallback((++loadedCount / count * 100) | 0), () =>
     resolve())
 })
+
+export const loadImg = (url) => new Promise((resolve, reject) => loader.loadImg(url, {isCrossOrigin: true}, (err, img) => err ? reject(err) : resolve((img => {
+    if (cc.sys.isNative) return img
+    let t2d = new cc.Texture2D
+    t2d.initWithElement(img)
+    t2d.handleLoadedTexture()
+    return t2d
+  })(img))))

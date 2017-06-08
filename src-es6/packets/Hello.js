@@ -2,7 +2,7 @@
  * Created by zhuangjianjia on 17-6-7.
  */
 import cc from '@cc'
-import {HELLO} from 'packets/headers'
+import {HELLO} from 'packets/sender'
 import Packet from 'datastructs/Packet'
 import {VERSION} from 'src/constances'
 

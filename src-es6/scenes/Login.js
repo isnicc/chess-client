@@ -6,29 +6,24 @@ import {VERSION} from 'src/constances'
 import {
   runScene,
   offsetCenter,
-  offsetUpLeft,
-  offsetUpRight,
   offsetDownRight,
-  offsetDownLeft,
-  offsetUp,
-  offsetRight,
-  offsetDown,
-  offsetLeft,
   bindClick,
 } from 'utils/core'
 import {canWechat as canWechatLogin} from 'utils/jsb'
-import Hello from 'scenes/Hello'
 import Checkbox from 'commons/Checkbox'
 import Alert from 'commons/Alert'
 import Loading from 'commons/Loading'
 import {Button} from '@ccui'
 import Hall from 'scenes/Hall'
 import Semver from 'semver'
-import {initialization, bindScene} from 'src/socket'
+import {initialization, bindScene, getConnect} from 'src/socket'
 import {getUser} from 'src/auth'
 import HelloPacket from 'packets/Hello'
 import LoginPacket from 'packets/Login'
+import RegistPacket from 'packets/Regist'
 import Packet from 'datastructs/Packet'
+import {LOGIN, HELLO} from 'packets/receiver'
+import {setUser} from 'src/auth'
 
 const resources = {
   bg: 'res/ui/bg/login.png',
@@ -57,13 +52,17 @@ const Class = Scene.extend({
     let loginBtn = null
     if (canWechat) {
       loginBtn = new Button(resources.wechat_login, resources.wechat_login_on)
+      bindClick(loginBtn, () => runScene(Hall))
     } else {
       loginBtn = new Button(resources.guest_login, resources.guest_login_on)
+      bindClick(loginBtn, () => {
+        this.loading.setTitle('登录中').show()
+        RegistPacket(getConnect())
+      })
     }
     this.loginBtn = loginBtn
     loginBtn.setAnchorPoint(0, 0.5)
     offsetCenter(loginBtn, -10, -20)
-    bindClick(loginBtn, () => runScene(Hall))
 
     this.protocalCheckbox = new Checkbox
     offsetCenter(this.protocalCheckbox, 20, -110)
@@ -102,20 +101,19 @@ const Class = Scene.extend({
   onWsOpen({target}) {
     // 发送hello消息， 取得服务器主要配置[服务器要求版本号等等]
     HelloPacket(target)
-
-    // let loginKey = getUser().login_key
-    // if (loginKey) {
-    //   cc.log('直接登录')
-    // } else {
-    //   this.loading.hide()
-    // }
+  },
+  onWsClose() {
+    this.alert.show('与服务器断开链接', '错误', false)
+  },
+  onWsError() {
+    this.alert.show('无法连接服务器', '错误', false)
   },
   onWsMessage({data, target}) {
     let packet = new Packet(data)
     cc.log('接收', packet.toHexString())
 
     switch (packet.readHead()) {
-      case 0x00:
+      case HELLO:
         let reqVer = packet.readString()
         cc.log('比较版本号', VERSION, reqVer)
         if (!Semver.satisfies(VERSION, reqVer)) {
@@ -126,6 +124,27 @@ const Class = Scene.extend({
             this.loading.setTitle('登陆中').show()
             LoginPacket(target, loginKey)
           }
+        }
+        break;
+      case LOGIN:
+        this.loading.hide()
+        let loginStat = packet.readByte()
+        cc.log('loginStat', loginStat)
+        if (loginStat) {
+          // 设置用户信息
+          let id = packet.readUInt(),
+            login_key = packet.readString(),
+            nickname = packet.readString(),
+            avatar = packet.readString(),
+            diamond = packet.readUInt()
+          setUser({
+            id,
+            login_key,
+            nickname,
+            avatar,
+            diamond,
+          })
+          runScene(Hall)
         }
         break;
       default:
