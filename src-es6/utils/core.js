@@ -107,13 +107,13 @@ export const offsetDownRight = (node, x = 0, y = 0) => node.setPosition(cc.winSi
 
 export const offsetDownLeft = (node, x = 0, y = 0) => node.setPosition(x, y)
 
-export const offsetUp = (node, offset = 0) => offsetCenter(node, 0, cc.winSize.height / 2 - offset)
+export const offsetUp = (node, offset = 0, offsetX = 0) => offsetCenter(node, offsetX, cc.winSize.height / 2 - offset)
 
-export const offsetRight = (node, offset = 0) => offsetCenter(node, cc.winSize.width / 2 - offset, 0)
+export const offsetRight = (node, offset = 0, offsetY = 0) => offsetCenter(node, cc.winSize.width / 2 - offset, offsetY)
 
-export const offsetDown = (node, offset = 0) => offsetCenter(node, 0, offset - cc.winSize.height / 2)
+export const offsetDown = (node, offset = 0, offsetX = 0) => offsetCenter(node, offsetX, offset - cc.winSize.height / 2)
 
-export const offsetLeft = (node, offset = 0) => offsetCenter(node, offset - cc.winSize.width / 2, 0)
+export const offsetLeft = (node, offset = 0, offsetY = 0) => offsetCenter(node, offset - cc.winSize.width / 2, offsetY)
 
 export const callArray = (array, callback) => array.forEach((obj, i) => callback(obj, i))
 

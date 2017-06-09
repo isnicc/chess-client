@@ -24,13 +24,12 @@ import RegistPacket from 'packets/Regist'
 import Packet from 'datastructs/Packet'
 import {LOGIN, HELLO} from 'packets/receiver'
 import {setUser} from 'src/auth'
+import {mapButtons} from 'utils/resources'
 
 const resources = {
   bg: 'res/ui/bg/login.png',
-  guest_login: 'res/ui/button/guestLogin.png',
-  guest_login_on: 'res/ui/button/guestLogin_on.png',
-  wechat_login: 'res/ui/button/wechatLogin.png',
-  wechat_login_on: 'res/ui/button/wechatLogin_on.png',
+  ...mapButtons('ui/button/guestLogin', false),
+  ...mapButtons('ui/button/wechatLogin', false),
 }
 
 const Class = Scene.extend({
@@ -51,10 +50,10 @@ const Class = Scene.extend({
     const canWechat = canWechatLogin()
     let loginBtn = null
     if (canWechat) {
-      loginBtn = new Button(resources.wechat_login, resources.wechat_login_on)
+      loginBtn = new Button(resources.wechatLogin, resources.wechatLogin_on)
       bindClick(loginBtn, () => runScene(Hall))
     } else {
-      loginBtn = new Button(resources.guest_login, resources.guest_login_on)
+      loginBtn = new Button(resources.guestLogin, resources.guestLogin_on)
       bindClick(loginBtn, () => {
         this.loading.setTitle('登录中').show()
         RegistPacket(getConnect())

@@ -1,6 +1,7 @@
 /**
  * Created by zhuangjianjia on 17-6-1.
  */
+import {mapButtons} from 'utils/resources'
 
 export const ui = {
   prompt_sm: 'res/ui/bg/alert.png',
@@ -13,21 +14,17 @@ export const ui = {
   cards_plist: 'res/game/cards.plist',
   cards_bg: 'res/game/cards.png',
 
-  ready: 'res/game/common/buttons/ready.png',
-  ready_on: 'res/game/common/buttons/ready_on.png',
-  ready_off: 'res/game/common/buttons/ready_off.png',
-  unready: 'res/game/common/buttons/unready.png',
-  unready_on: 'res/game/common/buttons/unready_on.png',
-  unready_off: 'res/game/common/buttons/unready_off.png',
-
-  checkbox1: 'res/ui/button/checkbox.png',
-  checkbox1_on: 'res/ui/button/checkbox_on.png',
-  checkbox2: 'res/ui/button/checkbox2.png',
-  checkbox2_on: 'res/ui/button/checkbox2_on.png',
+  ...mapButtons('game/common/buttons/ready'),
+  ...mapButtons('game/common/buttons/unready'),
+  ...mapButtons('ui/button/checkbox', false),
+  ...mapButtons('ui/button/checkbox2', false),
 
   progress: 'res/ui/bg/progress.png',
   progress_bg: 'res/ui/bg/progress_bg.png',
   sieve: 'res/ui/button/sieve.png',
+
+  message_bar: 'res/ui/bg/message_bar.png',
+  message_icon: 'res/ui/icon/message.png',
 }
 
 export const audio = {

@@ -11,6 +11,6 @@ export default socket => {
 
   packet.writeRandomByte()
 
-  cc.log('发送封包', packet.toHexString())
+  cc.log('发送Hello封包', packet.toHexString())
   socket.send(packet.toString())
 }

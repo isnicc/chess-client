@@ -6,18 +6,13 @@ import CardData from 'datastructs/Card'
 import NiuNiuPanel from 'layers/NiuNiuPanel'
 import RoomInfo from 'layers/RoomInfo'
 import {offsetCenter, callArray, bindClick} from 'utils/core'
+import {mapButtons} from 'utils/resources'
 
 const resources = {
   bg: 'res/game/niuniu/bg/bg.png',
-  bull: 'res/game/niuniu/buttons/bull.png',
-  bull_on: 'res/game/niuniu/buttons/bull_on.png',
-  bull_off: 'res/game/niuniu/buttons/bull_off.png',
-  bull_null: 'res/game/niuniu/buttons/bull_null.png',
-  bull_null_on: 'res/game/niuniu/buttons/bull_null_on.png',
-  bull_null_off: 'res/game/niuniu/buttons/bull_null_off.png',
-  bull_special: 'res/game/niuniu/buttons/bull_special.png',
-  bull_special_on: 'res/game/niuniu/buttons/bull_special_on.png',
-  bull_special_off: 'res/game/niuniu/buttons/bull_special_off.png',
+  ...mapButtons('game/niuniu/buttons/bull'),
+  ...mapButtons('game/niuniu/buttons/bull_null'),
+  ...mapButtons('game/niuniu/buttons/bull_special'),
 }
 
 const Class = Scene.extend({
