@@ -8,6 +8,8 @@ import {ui as resources} from 'src/resources'
 const Class = Sprite.extend({
   skin: 1,
   checked: false,
+  siblings: null,
+  siblings_only: false,
   ctor(skin = 1) {
     this._super()
 
@@ -18,14 +20,22 @@ const Class = Sprite.extend({
   },
   setChecked(flag) {
     this.checked = flag
-    if (flag) {
+    if (!flag) {
       this.setTexture(resources[`checkbox${this.skin}`])
     } else {
       this.setTexture(resources[`checkbox${this.skin}_on`])
     }
   },
   toggle() {
+    if (this.checked && this.siblings_only && this.siblings) {
+      if (this.siblings.every(c => c.checked === false) === true) {
+        return
+      }
+    }
     this.setChecked(!this.checked)
+    if (this.siblings) {
+      this.siblings.forEach(c => c.setChecked(false))
+    }
   },
 })
 

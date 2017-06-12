@@ -16,7 +16,7 @@ export const mapButtons = (url, off = true, on = true) => {
   let btn = {
     [k]: `${path}/${base}.png`,
   }
-  if (off) btn[`${k}_on`] = `${path}/${base}_on.png`
+  if (on) btn[`${k}_on`] = `${path}/${base}_on.png`
   if (off) btn[`${k}_off`] = `${path}/${base}_off.png`
   return btn
 }

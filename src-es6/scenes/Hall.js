@@ -12,6 +12,7 @@ import {Button} from '@ccui'
 import {mapButtons} from 'utils/resources'
 import MessageBar from 'layers/MessageBar'
 import EnterRoomPanel from 'layers/EnterRoomPanel'
+import CreateRoomPanel from 'layers/CreateRoomPanel'
 import {initialization, bindScene, getConnect} from 'src/socket'
 import {ENTER_ROOM} from 'packets/receiver'
 import EnterRoomPacket from 'packets/EnterRoom'
@@ -36,7 +37,12 @@ const resources = {
   ...mapButtons('ui/button/num7', false),
   ...mapButtons('ui/button/num8', false),
   ...mapButtons('ui/button/num9', false),
+
+  ...mapButtons('ui/button/create_room', false),
 }
+
+const GAME_NIUNIU = 'niuniu'
+const GAME_13SHUI = '13shui'
 
 const Class = Scene.extend({
   async ctor() {
@@ -108,6 +114,60 @@ const Class = Scene.extend({
 
     bindClick(this.enter_room_btn, () => this.enter_room_panel.show())
 
+    this.create_niuniu_room_panel = new CreateRoomPanel({
+      create_room: resources.create_room,
+      create_room_on: resources.create_room_on,
+    })
+    this.create_niuniu_room_panel.setGame(GAME_NIUNIU)
+    this.create_13shui_room_panel = new CreateRoomPanel({
+      create_room: resources.create_room,
+      create_room_on: resources.create_room_on,
+    })
+    this.create_13shui_room_panel.setGame(GAME_13SHUI)
+
+    bindClick(this.niuniu_btn, () => {
+      this.create_niuniu_room_panel.setOptions({
+        master_mode: [{
+          label: '无',
+          value: 0,
+        }, {
+          label: '轮流',
+          value: 1,
+        }, {
+          label: '指定',
+          value: 2,
+        }],
+        player_count: [{
+          label: '1人',
+          value: 1,
+        }, {
+          label: '2人',
+          value: 2,
+        }, {
+          label: '3人',
+          value: 3,
+        }, {
+          label: '4人',
+          value: 4,
+        }],
+        round_count: [{
+          label: '10局',
+          value: 10,
+        }, {
+          label: '20',
+          value: 20,
+        }, {
+          label: '30',
+          value: 30,
+        }, {
+          label: '40',
+          value: 40,
+        }],
+      })
+      this.create_niuniu_room_panel.show()
+    })
+    bindClick(this._13shui_btn, () => this.create_13shui_room_panel.show())
+
     this.addChild(this.bg)
     this.addChild(this.mm)
     this.addChild(this.userAvatar)
@@ -120,6 +180,8 @@ const Class = Scene.extend({
     this.addChild(this.btn_bg)
     this.addChild(this.enter_room_btn)
     this.addChild(this.resume_room_btn)
+    this.addChild(this.create_niuniu_room_panel)
+    this.addChild(this.create_13shui_room_panel)
     this.addChild(this.enter_room_panel)
     this.addChild(this.setting)
     this.addChild(this.loading)

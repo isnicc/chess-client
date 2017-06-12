@@ -65,7 +65,7 @@ const Class = Prompt.extend({
       this.popNumber()
       this.popNumber()
       this.popNumber()
-      this.parent.onEnterRoom(numbers)
+      this.parent.onEnterRoom && this.parent.onEnterRoom(numbers)
     }
   },
   popNumber() {

@@ -16,7 +16,7 @@ export const ui = {
 
   ...mapButtons('game/common/buttons/ready'),
   ...mapButtons('game/common/buttons/unready'),
-  ...mapButtons('ui/button/checkbox', false),
+  ...mapButtons('ui/button/checkbox1', false),
   ...mapButtons('ui/button/checkbox2', false),
 
   progress: 'res/ui/bg/progress.png',
