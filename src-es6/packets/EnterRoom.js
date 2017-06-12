@@ -10,6 +10,6 @@ export default (socket, roomId) => {
 
   packet.writeString(roomId)
 
-  socket.send(packet.toString())
+  socket.send(packet.toArrayBuffer())
   cc.log('发送进入房间封包', packet.toHexString())
 }

@@ -270,4 +270,8 @@ export default class Packet {
     return this.buffer.toString('hex', 0, this.length).split('').map((c, i, arr) => i % 2 === 0 ? c + arr[i + 1] : null).filter(v => v).join(sep)
   }
 
+  toArrayBuffer() {
+    this.writePackLength(this.length)
+    return this.buffer.slice(0, this.length)
+  }
 }

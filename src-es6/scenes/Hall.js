@@ -187,7 +187,12 @@ const Class = Scene.extend({
     this.addChild(this.loading)
     this.addChild(this.alert)
 
-    let img = await loadImg(this.userInfo.avatar)
+    let img
+    try {
+      img = await loadImg(this.userInfo.avatar)
+    } catch (e) {
+      cc.log('加载头像失败', e)
+    }
     this.userAvatar.setTexture(img)
     this.userAvatar.setScale(100 / this.userAvatar.getContentSize().width)
   },

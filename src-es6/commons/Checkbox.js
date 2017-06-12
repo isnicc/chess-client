@@ -10,11 +10,11 @@ const Class = Sprite.extend({
   checked: false,
   siblings: null,
   siblings_only: false,
-  ctor(skin = 1) {
+  ctor(skin = 1, flag = false) {
     this._super()
 
     this.skin = skin
-    this.setChecked(false)
+    this.setChecked(flag)
 
     bindClick(this, () => this.toggle())
   },

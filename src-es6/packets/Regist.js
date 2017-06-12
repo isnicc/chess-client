@@ -14,6 +14,6 @@ export default (socket, open_id = null) => {
   }
   else packet.writeByte(0)
 
-  socket.send(packet.toString())
+  socket.send(packet.toArrayBuffer())
   cc.log('发送注册封包', packet.toHexString())
 }

@@ -10,6 +10,6 @@ export default (socket, loginKey) => {
 
   packet.writeString(loginKey)
 
-  socket.send(packet.toString())
+  socket.send(packet.toArrayBuffer())
   cc.log('发送登录封包', packet.toHexString())
 }

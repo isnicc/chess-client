@@ -63,7 +63,7 @@ const Class = Scene.extend({
     loginBtn.setAnchorPoint(0, 0.5)
     offsetCenter(loginBtn, -10, -20)
 
-    this.protocalCheckbox = new Checkbox
+    this.protocalCheckbox = new Checkbox(1, true)
     offsetCenter(this.protocalCheckbox, 20, -110)
 
     this.protocalLabel = new LabelTTF('同意用户使用协议', '', 30)
@@ -97,9 +97,9 @@ const Class = Scene.extend({
     this.loading.show()
     initialization()
   },
-  onWsOpen({target}) {
+  onWsOpen() {
     // 发送hello消息， 取得服务器主要配置[服务器要求版本号等等]
-    HelloPacket(target)
+    HelloPacket(getConnect())
   },
   onWsClose() {
     this.alert.show('与服务器断开链接', '错误', false)
@@ -121,7 +121,7 @@ const Class = Scene.extend({
           let loginKey = getUser().login_key || 'hello'
           if (loginKey) {
             this.loading.setTitle('登陆中').show()
-            LoginPacket(target, loginKey)
+            LoginPacket(getConnect(), loginKey)
           }
         }
         break;
