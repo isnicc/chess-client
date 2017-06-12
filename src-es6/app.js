@@ -4,7 +4,7 @@ import {runScene} from 'utils/core'
 import {preload} from 'utils/loader'
 import {ui} from 'src/resources'
 import Hello from 'scenes/Hello'
-import NiuNiuRoom from 'scenes/NiuNiuRoom'
+import Login from 'scenes/Login'
 
 import {Buffer} from 'safe-buffer'
 window.Buffer = Buffer
@@ -17,6 +17,20 @@ game.onStart = async() => {
   view.setDesignResolutionSize(1280, 720, cc.ResolutionPolicy.FIXED_HEIGHT)
   view.adjustViewPort(true)
   view.setOrientation(cc.ORIENTATION_LANDSCAPE)
+
+  let pauseTime = 0
+  cc.eventManager.addCustomListener(cc.game.EVENT_HIDE, () => {
+    pauseTime = new Date().getTime()
+  })
+  cc.eventManager.addCustomListener(cc.game.EVENT_SHOW, () => {
+    if (new Date().getTime() - pauseTime > 60 * 1000) {
+      if (cc.sys.isNative) {
+        runScene(Login)
+      } else {
+        window.location.reload()
+      }
+    }
+  })
 
   await preload(ui)
 
